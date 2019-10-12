@@ -1,4 +1,4 @@
-from utils import available_moves, get_start_end, insort
+from utils import available_moves, get_start_end, insort, str2n
 
 
 def heuristic(pos, goal):
@@ -9,23 +9,27 @@ def heuristic(pos, goal):
 
 
 def best_first(board, start, goal):
-    print('Start/Goal', start, '/', goal)
+    board[goal[0]][goal[1]] = 0
     queue = [([start], 0)]
     path = [None]
 
     while path[-1] != goal:
         # print('Q', queue)
         if not queue:
+            path = None
             break
         # -1 ou 0?
         path = queue.pop()[0]
-        print('moves', available_moves(board, path[-1]), 'from', path[-1])
+        curr = path[-1]
+        board[curr[0]][curr[1]] = .4
 
         # Append moves
         for move in available_moves(board, path[-1]):
             insort((path + [move], heuristic(move, goal)), queue)
             board[move[0]][move[1]] = .2
 
+    board[goal[0]][goal[1]] = str2n['$']
+    board[start[0]][start[1]] = str2n['#']
     return path
 
 

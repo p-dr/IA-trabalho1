@@ -5,11 +5,19 @@ from sys import argv
 
 while True:
     board = gen_board(int(argv[1]), int(argv[2]))
-    path = bf.search(board, bf.best_first)
-    plt.pcolor(board)
-    for i, j in path:
-        board[i][j] = 1
+    try:
+        path = bf.search(board, bf.best_first)
+    except:
+        path = None
+
+    if path:
+        for i, j in path[1:-1]:
+            board[i][j] = 1
+
     print(path)
+    plt.figure(figsize=(7, 7), frameon=False)
+    plt.axis('off')
+    plt.pcolor(board, cmap='inferno')
     plt.show()
 
 
