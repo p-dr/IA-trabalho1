@@ -1,7 +1,23 @@
-from gen_boards import str2n
+# Valores menores que 1 são considerados 0.
+str2n = {'-': 4, '*': 0, '#': 2, '$': 3}
+n2str = {v: k for k, v in str2n.items()}
 
 orth_steps = ((-1, 0), (0, -1), (1, 0), (0, 1))
-steps = ((-1, -1), (-1, 0), (-1, 1), (0, 0), (0, 1), (1, 1))
+steps = ((-1, -1), (-1, 0), (-1, 1), (0, 0),
+         (0, 1), (1, 1), (1, -1), (1, 0))
+
+
+def insort(a, l):
+    """Insere a na lista l ordenada do maior para o menor."""
+    item, label = a
+    i = 0
+    for i in range(len(l)):
+        if label > l[i][1]:
+            break
+    else:
+        i += 1
+
+    l[i:i] = a,
 
 
 def inside(board, i, j):

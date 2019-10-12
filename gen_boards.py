@@ -1,15 +1,15 @@
-from utils import soft_free, count, available_steps
+from utils import soft_free, count, available_steps, str2n, n2str
 from random import random, choice
 from math import floor
 from sys import argv
 
-# Valores menores que 1 são considerados 0.
-n2str = {3: '-', 0: '*', 2: '#', 2.5: '$'}
-str2n = {'-': 3, '*': 0, '#': 2, '$': 2.5}
-
 
 def prob(p):
     return lambda x: random() < p
+
+
+def manhattan_dist(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
 def blank_board(i, j):
@@ -76,7 +76,7 @@ def random_walk(board, start, trail, turn_func,
     return pos
 
 
-def build_walls(board, nseeds=None, turn_prob=.2, end_prob=.05,
+def build_walls(board, nseeds=None, turn_prob=.2, end_prob=.0,
                 only_free=False):
     # only_free takes lot of time
     if nseeds is None:
@@ -109,24 +109,25 @@ def seeds_gen(board, nseeds=None, only_free=False):
 
 
 def gen_board(i, j, *args, **kwargs):
-    new_board = [[0]]
-
     new_board = blank_board(i, j)
-    start = seeds_gen(new_board, 1)
+    dist_thresh = (len(new_board) + len(new_board[0])) / 2
+    start, goal = (0, 0), (0, 0)
+
+    while manhattan_dist(start, goal) < dist_thresh:
+        start = seeds_gen(new_board, 1)
+        goal = seeds_gen(new_board, 1)
+
     new_board[start[0]][start[1]] = str2n['$']
+    new_board[goal[0]][goal[1]] = str2n['#']
 
-    end = random_walk(new_board, start, trail=1,
-                      turn_func=.5, end_func=.0, orth=False)
-    new_board[end[0]][end[1]] = str2n['#']
-
-    clean_dust(new_board)
     build_walls(new_board, *args, **kwargs)
+    clean_dust(new_board, thresh=min(str2n['#'], str2n['-'], str2n['$']))
+
     return new_board
 
 
 def write_board(board, f):
     f.write(f'{len(board)} {len(board[0])}\n')
-    clean_dust(board, thresh=min(str2n.values()))
 
     for line in board:
         f.write(''.join([n2str[n] for n in line]) + '\n')
