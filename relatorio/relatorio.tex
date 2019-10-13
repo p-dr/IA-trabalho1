@@ -3,8 +3,30 @@
 \usepackage[margin=2cm]{geometry}
 
 \begin{document}
-\section{Criação dos tabuleiros}
-Criou-se algoritmo para a geração de tabuleiros, com suas paredes e os pontos de início e fim da busca. Esse processo é executado pelo script \texttt{gen\_boards.py}, e acontece da seguinte maneira:
+\section{Tabuleiros}
+Foram criadas funções para criação, leitura e escrita de tabuleiros que serão usados no presente trabalho. Para a manipulação e visualização, mostrou-se mais fácil utilizar matrizes numéricas para representar os objetos sobre o tabuleiro, enquanto nos foi requisitado o uso de representação com caracteres para as casas na leitura e escrita dos tabuleiros. Desta forma, estabeleceu-se o código apresentado pela tabela \ref{codigo}, implementado no dicionário \verb|str2n| contido no arquivo \verb|utils.py|.
+
+\begin{table}[h!]
+	\label{codigo}
+	\centering
+	\begin{tabular}{c|c|c}
+		Significado & Código de caracteres & Código numérico\\
+		\hline
+		Casa livre & * & 0\\
+		Parede ou obstáculo & - & 4\\
+		Casa objetivo & \$ & 3\\
+		Casa de início da busca & \# & 2\\
+		Marcações temporárias & (Nenhum) & \textless 1
+
+	\end{tabular}
+	\caption{Tabela de conversão entre os diferentes códigos utilizados no projeto.}
+\end{table}
+
+\subsection{Criação dos tabuleiros}
+Criou-se algoritmo para a geração automática de tabuleiros, com suas paredes e os pontos de início e fim da busca. Visto que se deseja aparência semelhante à exposta na descrição do projeto (Figura \ref{tabuleiro_pedido}), não seria possível a geração completamente aleatória das paredes, e fez-se necessário desenvolver a estratégia descrita adiante.
+
+\subsubsection{Visão geral}
+ O processo de gerar tabuleiros é executado pelo script \texttt{gen\_boards.py}, mais especificamente e em seu mais alto nível pela função \verb|gen_board| implementada no referido \emph{script}, acontecendo da seguinte maneira:
 
 \begin{enumerate}
 	\item É criado um tabuleiro (matrix) em branco (preenchido com zeros), a partir das dimensões informadas com argumento;
@@ -12,5 +34,56 @@ Criou-se algoritmo para a geração de tabuleiros, com suas paredes e os pontos 
 	\item São construídas as paredes, como melhor explicado posteriormente.
 \end{enumerate}
 
-Inicialmente criava-se um caminho po
+[código da função]
+
+%Inicialmente criava-se um caminho aleatório para garantir que não houvesse
+\subsubsection{Orquestração da contrução das paredes}
+
+As peças mais importantes dese processo são as duas funções \verb|build_walls| e \verb|random_walk|, a primeira sendo de nível superior. O algoritmo de criação das paredes segue o seguinte raciocínio, coordenado pela \verb|build_walls|:
+
+\begin{enumerate}
+	\item Uma casa aleatória do tabuleiro (chamada \emph{seed} no código) é sorteada por meio da função \verb|seeds_gen|;
+	\item É desenhada uma parede a partir dessa casa com a função random walk;
+	\item O processo é repetido \verb|nseeds| vezes, um dos parâmetro sda função \verb|build_wals|, definido empiricamente por padrão como um décimo da área do tabuleiro.
+\end{enumerate}
+
+[código da função]
+
+
+\subsubsection{Construção de cada parede}
+
+A partir de cada semente (casa aleatória do tabuleiro) fornecida à função \verb|random_walk| pela função \verb|build_wals|, será traçada (ou pelo menos tentar-se-á traçar) uma nova parede. O papel da \verb|random_walk| é então "andar" pelas casas do tabuleiro marcando-do com o símbolo que designará aqueles quadrados como um novo obstáculo. A \verb|random_walk| pede como argumento duas funções essenciais, a \verb|end_func| e a \verb|turn_func|, que devem receber o comprimento do caminho traçado e retornar um valor booleao. O processo de traçado executado pela \verb|random_walk| é então esclarecido a seguir:
+
+\begin{enumerate}
+	\item A partir da posição inicial (argumento \verb|start|), verifica-se quais são os deslocametos unitários possíveis a partir \verb|start|, isto é, que não levarão a casas ocupadas por algum obstáculo, que levarão a casas marcadas com 0, e sorteia-se um desses "passos" (tuplas no formato (1,0), (-1, 1), (0, -1), etc.). Os passos podem ser restritos aos ortogonais (baixo, cima, direita, esquerda) definindo como \verb|True| o parâmetro \verb|orth|;
+	\item Se não houver passo possível, a parede não é criada;
+	\item Caso contrário desloca-se a posição para posição + passo e marca-se essa casa como parede (o número marcado é dado pelo argumento \verb|trail|). As outras casas do tabuleiro referentes aos outros passos possíveis não escolhidos são também marcadas com algum número menor que 1 (0.1 no caso), para que não sejam ocupadas em iterações posteriores e mantenham as paredes separadas entre si;
+	\item Esse processo de deslocamento e marcação prossegue, avançando com o mesmo passo sorteado, na mesma direção, até que:
+		\begin{enumerate}
+			\item É encontrado um obstáculo (casa do tabuleiro com valor não nulo) à frente na direção escolhida atual;
+			\item A função \verb|turn_func| retorne \verb|True|, caso em que a direção (passo) será sorteada novamente, ou;
+			\item A função \verb|end_func| retorne \verb|True|, caso em que a criação da parede será finalizada.
+		\end{enumerate}
+\end{enumerate}
+
+As funções \verb|end_func| e \verb|turn_func| são uma boa forma de controlar a dinâmica da criação de paredes. Se esses argumentos da função \verb|random_walk| são providos a ela como \verb|floats| entre 0 e 1, a \verb|random_walk| os substitui por funções que retornam \verb|True| com a probabilidade representada pelos \verb|floats| fornecidos.\\
+
+Outra possibilidade criada, é fornecer um inteiro como argumento \verb|len| para a \verb|random_walk|, caso em que \verb|end_func| se torna função que retorna \verb|True| se a distância traçada for maior que o inteiro fornecido. Nesse caso, o inteiro representaria um comprimento máximo para a parede, de forma que ela seria finalizada por colisão com uma casa não vazia ou por atingir esse comprimento máximo.
+
+Para os experimentos são usadas \verb|turn_func = 0.2| e \verb|end_func = 0|, de forma que há sempre um quinto de probabilidade de virar, e a parede será desenhada até que se encontre um obstáculo.
+
+[Resultados paredes]
+
+\section{Algoritmos de busca}
+
+\subsection{Busca cega}
+\subsubsection{Busca em profundidade}
+\subsubsection{Busca em largura}
+
+\subsection{Busca informada}
+\subsubsection{Busca \emph{best-firt}}
+
+Esse algoritmo de busca é implementado pela função
+
+\subsubsection{Busca A*}
 \end{document}

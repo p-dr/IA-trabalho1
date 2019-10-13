@@ -91,4 +91,3 @@ def weight(path):
         ret += ((path[i][0] - path[i-1][0]) ** 2 +
                 (path[i][1] - path[i-1][1]) ** 2) ** .5
     return ret
-    return ret

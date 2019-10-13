@@ -48,6 +48,7 @@ def random_walk(board, start, trail, turn_func,
         end_func = prob(end_func)
 
     pos = start
+    # MARQUE START NO TABULEIRO
     step = random_step(board, pos, orth)
 
     for l in count():
