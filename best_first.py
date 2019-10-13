@@ -14,7 +14,6 @@ def best_first(board, start, goal):
     path = [None]
 
     while path[-1] != goal:
-        # print('Q', queue)
         if not queue:
             path = None
             break

@@ -81,3 +81,14 @@ def get_start_end(board):
                 end = (i, j)
                 if start:
                     return (start, end)
+
+
+def weight(path):
+    """ Retorna o peso (distância euclidiana percorrida) de uma lista path de
+    posições (i, j)."""
+    ret = 0
+    for i in range(1, len(path)):
+        ret += ((path[i][0] - path[i-1][0]) ** 2 +
+                (path[i][1] - path[i-1][1]) ** 2) ** .5
+    return ret
+    return ret

@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+
+\begin{document}
+\section{Criação dos tabuleiros}
+Criou-se algoritmo para a geração de tabuleiros, com suas paredes e os pontos de início e fim da busca. Esse processo é executado pelo script \texttt{gen\_boards.py}, e acontece da seguinte maneira:
+
+\begin{enumerate}
+	\item É criado um tabuleiro (matrix) em branco (preenchido com zeros), a partir das dimensões informadas com argumento;
+	\item São sorteados dois pontos aleatoriamente para servirem de início e fim da busca. São sorteadas quantas vezes forem preciso até que tenham distância Manhattan entre si maior que um comprimento heuristicamente definido como a soma das dimensões do tabuleiro sobre 2;
+	\item São construídas as paredes, como melhor explicado posteriormente.
+\end{enumerate}
+
+Inicialmente criava-se um caminho po
+\end{document}
