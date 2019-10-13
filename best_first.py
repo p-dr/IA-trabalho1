@@ -9,7 +9,6 @@ def heuristic(pos, goal):
 
 
 def best_first(board, start, goal):
-    board[goal[0]][goal[1]] = 0
     queue = [([start], 0)]
     path = [None]
 
@@ -27,11 +26,15 @@ def best_first(board, start, goal):
             insort((path + [move], heuristic(move, goal)), queue)
             board[move[0]][move[1]] = .2
 
-    board[goal[0]][goal[1]] = str2n['$']
     board[start[0]][start[1]] = str2n['#']
     return path
 
 
 def search(board, search_func):
-    path = search_func(board, *get_start_end(board))
+    se = get_start_end(board)
+    board[se[1][0]][se[1][1]] = 0
+
+    path = search_func(board, *se)
+
+    board[se[1][0]][se[1][1]] = str2n['$']
     return path

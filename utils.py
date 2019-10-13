@@ -31,7 +31,7 @@ def free(board, i, j):
 
 
 def soft_free(board, i, j, thresh=1):
-    """Verifica de o valor de board[i][j] é menor que thresh."""
+    """Verifica se o valor de board[i][j] é menor que thresh."""
     return (inside(board, i, j) and (board[i][j] < thresh))
 
 
@@ -72,12 +72,12 @@ def get_start_end(board):
         for j in range(len(board[0])):
             content = board[i][j]
 
-            if content == str2n['#']:
+            if (not start) and (content == str2n['#']):
                 start = (i, j)
                 if end:
                     return (start, end)
 
-            elif content == str2n['$']:
+            elif (not end) and (content == str2n['$']):
                 end = (i, j)
                 if start:
                     return (start, end)

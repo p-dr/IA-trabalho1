@@ -1,4 +1,4 @@
-from utils import get_start_end, weight
+from utils import get_start_end, weight, str2n
 import best_first as bf
 import matplotlib.pyplot as plt
 from gen_boards import gen_board
@@ -8,9 +8,11 @@ from time import time as t
 
 def test_search(board, search_func):
     se = get_start_end(board)
+    board[se[1][0]][se[1][1]] = 0
     t0 = t()
     path = search_func(board, *se)
     dt = t() - t0
+    board[se[1][0]][se[1][1]] = str2n['$']
 
     if path:
         return {'dt': dt,

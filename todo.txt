@@ -1,2 +1,2 @@
-* Aumentar o comprimento médio dos caminhos de garantia;
+\ Aumentar o comprimento médio dos caminhos de garantia;
 * Um dos extremos das paredes tá criando sujeira demais (.1).
