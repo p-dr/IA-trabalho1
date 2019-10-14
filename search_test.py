@@ -1,6 +1,8 @@
 from utils import get_start_end, weight, str2n
 import best_first as bf
 import a_star as a
+import depth_first_search as dfs
+import breadth_first_search as bfs
 from matplotlib import use
 import matplotlib.pyplot as plt
 from gen_boards import gen_board
@@ -26,7 +28,7 @@ def test_search(board, search_func):
 if __name__ == '__main__':
     while True:
         board = gen_board(int(argv[1]), int(argv[2]))
-        search_res = test_search(board, a.search)
+        search_res = test_search(board, dfs.search)
 
         if search_res:
             path = search_res['path']
