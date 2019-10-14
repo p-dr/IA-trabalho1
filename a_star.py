@@ -40,21 +40,20 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         if pos == target:
             return calc_path(parents)
         closed_list.append(pos)
-        children = available_moves(board, pos)
-        for c in children:
-            if c not in closed_list:
-                f = calc_f(pos, c, target)
+        for move in available_moves(board, pos):
+            if move not in closed_list:
+                f = calc_f(pos, move, target)
                 try:
-                    # i = posição de c em open_list
-                    i = [l[1] for l in open_list].index(c)
+                    # i = posição de move em open_list
+                    i = [l[1] for l in open_list].index(move)
                     old_f = open_list[i][0]
                     if f < old_f:
                         open_list[i][0] = f
                         heapify(open_list)
-                        parents[c] = pos
+                        parents[move] = pos
                 except ValueError:
                     # c não está em open_list
-                    heappush(open_list, [f, c])
-                    parents[c] = pos
+                    heappush(open_list, [f, move])
+                    parents[move] = pos
 
     return None
