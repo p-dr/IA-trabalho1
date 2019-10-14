@@ -1,5 +1,7 @@
 from utils import get_start_end, weight, str2n
 import best_first as bf
+import a_star as a
+from matplotlib import use
 import matplotlib.pyplot as plt
 from gen_boards import gen_board
 from sys import argv
@@ -24,7 +26,7 @@ def test_search(board, search_func):
 if __name__ == '__main__':
     while True:
         board = gen_board(int(argv[1]), int(argv[2]))
-        search_res = test_search(board, bf.best_first)
+        search_res = test_search(board, a.search)
 
         if search_res:
             path = search_res['path']
@@ -36,4 +38,5 @@ if __name__ == '__main__':
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
         plt.pcolor(board, cmap='inferno')
+        use('TkAgg')
         plt.show()

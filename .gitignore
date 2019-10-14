@@ -127,3 +127,6 @@ dmypy.json
 # Personal backup files
 bak/
 test/
+
+#vscode config
+.vscode/
