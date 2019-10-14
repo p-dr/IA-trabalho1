@@ -38,5 +38,5 @@ if __name__ == '__main__':
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
         plt.pcolor(board, cmap='inferno')
-        use('TkAgg')
+        use('QT5Agg')
         plt.show()
