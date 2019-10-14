@@ -1,6 +1,4 @@
 from utils import available_moves, get_start_end, insort, str2n
-from matplotlib import use
-import matplotlib.pyplot as plt
 
 def search(board: list, origin: tuple, target: tuple) -> list:
 
@@ -28,12 +26,6 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         if pos != origin:
             board[pos[0]][pos[1]] = .4
         processed.append(pos)
-        fig = plt.figure(figsize=(7, 7), frameon=False)
-        ax = fig.add_axes([0, 0, 1, 1])
-        ax.axis('off')
-        plt.pcolor(board, cmap='inferno')
-        use('QT5Agg')
-        plt.show()
 
     return None
                 
