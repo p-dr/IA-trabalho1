@@ -37,7 +37,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
     ######## inicializações ###########
     open_list = []
     heappush(open_list, [0, origin])
-    closed_list = []
+    closed_list = set()
     parents = {}
     calc_g.values = {origin: 0}
     calc_h.values = {}
@@ -64,6 +64,6 @@ def search(board: list, origin: tuple, target: tuple) -> list:
                     # c não está em open_list
                     heappush(open_list, [f, move])
                     parents[move] = pos
-        closed_list.append(pos)
+        closed_list.add(pos)
 
     return None
