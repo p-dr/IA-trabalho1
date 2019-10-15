@@ -2,21 +2,25 @@ from math import sqrt
 from utils import available_moves
 from heapq import heappop, heappush, heapify
 
+
 def calc_g(pos1: tuple, pos2: tuple) -> float:
     """ "Peso" para ir da origem até pos2 através de pos1 """
     dist = abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
     calc_g.values[pos2] =  calc_g.values[pos1] + (1 if dist == 1 else sqrt(2))
     return calc_g.values[pos2]
 
+
 def calc_h(pos: tuple, target: tuple) -> float:
     """ Distância euclidiana de pos a target """
-    #TODO memoization
+    # TODO memorization
     dx = target[0] - pos[0]
     dy = target[1] - pos[1]
     return sqrt(dx**2 + dy**2)
 
+
 def calc_f(pos1: tuple, pos2: tuple, target: tuple) -> float:
     return calc_g(pos1, pos2) + calc_h(pos2, target)
+
 
 def search(board: list, origin: tuple, target: tuple) -> list:
     """ Executa o algoritmo A* no tabuleiro da origem ao destino """

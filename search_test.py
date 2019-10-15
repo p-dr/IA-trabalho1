@@ -1,10 +1,9 @@
 from utils import get_start_end, weight, str2n
-import best_first as bf
-import a_star as a
+from view import show_board
 import depth_first_search as dfs
 import breadth_first_search as bfs
-from matplotlib import use
-import matplotlib.pyplot as plt
+import best_first as bf
+import a_star as a
 from gen_boards import gen_board
 from sys import argv
 from time import time as t
@@ -25,10 +24,10 @@ def test_search(board, search_func):
                 'path': path}
 
 
-if __name__ == '__main__':
+def main():
     while True:
         board = gen_board(int(argv[1]), int(argv[2]))
-        search_res = test_search(board, dfs.search)
+        search_res = test_search(board, bfs.search)
 
         if search_res:
             path = search_res['path']
@@ -36,9 +35,8 @@ if __name__ == '__main__':
                 board[i][j] = 1
 
         print(search_res)
-        fig = plt.figure(figsize=(7, 7), frameon=False)
-        ax = fig.add_axes([0, 0, 1, 1])
-        ax.axis('off')
-        plt.pcolor(board, cmap='inferno')
-        use('QT5Agg')
-        plt.show()
+        show_board(board)
+
+
+if __name__ == '__main__':
+    main()

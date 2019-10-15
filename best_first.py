@@ -8,7 +8,7 @@ def heuristic(pos, goal):
     return 2 ** .5 * min(a, b) + d
 
 
-def best_first(board, start, goal):
+def search(board, start, goal):
     queue = [([start], 0)]
     path = [None]
 
@@ -27,14 +27,4 @@ def best_first(board, start, goal):
             board[move[0]][move[1]] = .2
 
     board[start[0]][start[1]] = str2n['#']
-    return path
-
-
-def search(board, search_func):
-    se = get_start_end(board)
-    board[se[1][0]][se[1][1]] = 0
-
-    path = search_func(board, *se)
-
-    board[se[1][0]][se[1][1]] = str2n['$']
     return path

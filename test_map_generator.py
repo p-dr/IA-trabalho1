@@ -1,8 +1,7 @@
 from gen_boards import gen_board
-from matplotlib.pyplot import pcolor, show
+from view import show_board
 from sys import argv
 
 while True:
-    board = gen_board(* map(eval, argv[1:]))
-    pcolor(board)
-    show()
+    board = gen_board(*map(eval, argv[1:]))
+    show_board(board)

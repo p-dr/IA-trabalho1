@@ -1,4 +1,5 @@
-from utils import available_moves, get_start_end, insort, str2n
+from utils import available_moves
+
 
 def search(board: list, origin: tuple, target: tuple) -> list:
 
@@ -8,7 +9,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         while path[-1] != origin:
             path.append(parents[path[-1]])
         return path
-    
+
     visited = []
     visited.append(origin)
     parents = {}
@@ -19,17 +20,12 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         if pos == target:
             return calc_path(parents)
         for move in available_moves(board, pos):
-            if move not in processed:
-                board[move[0]][move[1]] = .2
-                visited.insert(0, move)
-                parents[move] = pos
+            # if move not in processed:
+            board[move[0]][move[1]] = .2
+            visited.insert(0, move)
+            parents[move] = pos
         if pos != origin:
             board[pos[0]][pos[1]] = .4
         processed.append(pos)
 
     return None
-                
-
-
-
-
