@@ -10,8 +10,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
             path.append(parents[path[-1]])
         return path
 
-    visited = []
-    visited.append(origin)
+    visited = [origin]
     parents = {}
     processed = []
 
