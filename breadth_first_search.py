@@ -1,8 +1,11 @@
+from view import plot_board
 from utils import available_moves
 from collections import deque
+from celluloid import Camera
 
 
-def search(board: list, origin: tuple, target: tuple) -> list:
+def search(board: list, origin: tuple,
+           target: tuple, camera: Camera = None) -> list:
 
     def calc_path(parents: dict) -> list:
         """ Retorna o caminho desde a origem até o destino """
@@ -29,5 +32,8 @@ def search(board: list, origin: tuple, target: tuple) -> list:
                 visited.append(move)
                 parents[move] = pos
         processed.add(pos)
+        if camera is not None:
+            plot_board(board)
+            camera.snap()
 
     return None

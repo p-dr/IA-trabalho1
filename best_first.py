@@ -1,8 +1,9 @@
+from view import plot_board
 from utils import available_moves, str2n, trapezoidal_dist
 from heapq import heappush, heappop
 
 
-def search(board, start, goal):
+def search(board, start, goal, camera=None):
     queue = [(0, [start])]
     trapezoidal_dist.values = {start: 0}
     processed = set()
@@ -22,6 +23,10 @@ def search(board, start, goal):
             if move not in processed:
                 heappush(queue, (trapezoidal_dist(move, goal), path + [move]))
                 board[move[0]][move[1]] = .2
+
+        if camera is not None:
+            plot_board(board)
+            camera.snap()
 
         processed.add(curr)
     board[start[0]][start[1]] = str2n['#']
