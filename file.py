@@ -1,17 +1,20 @@
-def readFile(filename: str) -> tuple:
+def readFile(filename: str):
     """ Lê o arquivo 'filename' e retorna uma tupla com os
-    obstáculos, a origem e o destino do tabuleiro """
-    obstacles = []
-    with open(filename) as file:
-        # ignora a primeira linha e os newlines no final de cada linha
-        lines = file.read().splitlines()[1:]
-    for i in range(len(lines)):
-        for j in range(len(lines[i])):
-            char = lines[i][j]
-            if char == '-':
-                obstacles.append((i, j))
-            elif char == '#':
-                origin = (i, j)
-            elif char == '$':
-                target = (i, j)
-    return (obstacles, origin, target)
+    obstáculos, a origem e o destino para cada labirinto do arquivo """
+    with open(filename, 'r') as file:
+        while True:
+            obstacles = set()
+            rows = file.readline().split(' ')[0]
+            if not rows:
+                break
+            for i in range(int(rows)):
+                line = file.readline()[:-1]
+                for j in range(len(line)):
+                    char = line[j]
+                    if char == '-':
+                        obstacles.add((i, j))
+                    elif char == '#':
+                        origin = (i, j)
+                    elif char == '$':
+                        target = (i, j)
+            yield (obstacles, origin, target)
