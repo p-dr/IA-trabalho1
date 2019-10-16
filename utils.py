@@ -28,7 +28,7 @@ def inside(board, i, j):
 def free(board, i, j):
     """Verifica se board[i][j] está livre."""
     # Note: goal square is now considered a free square.
-    return (inside(board, i, j) and (board[i][j] in (0, str2n['$'])))
+    return (inside(board, i, j) and (board[i][j] != 4))
 
 
 def soft_free(board, i, j, thresh=1):

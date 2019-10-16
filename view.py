@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 from matplotlib import use
+import matplotlib.pyplot as plt
 
 
 def show_board(board, fig=None, show=True):
