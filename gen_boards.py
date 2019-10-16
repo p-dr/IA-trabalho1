@@ -2,6 +2,7 @@ from utils import soft_free, count, available_steps, str2n, n2str
 from random import random, choice
 from math import floor
 from sys import argv
+from board import Board
 
 
 def prob(p):
@@ -146,18 +147,25 @@ def parse_board(board_str):
     return board
 
 
-def read_boards(path):
-    """Lê arquivo de tabuleiros no formato .boards e retorna lista com
-       todos eles em formato numérico."""
-
-    with open(path, 'r') as f:
-        content = f.read()
-
-    boards = []
-    for board_str in content.split('\n\n')[:-1]:
-        boards.append(parse_board(board_str))
-
-    return boards
+def read_boards(filename: str) -> Board:
+    """ Lê o arquivo 'filename' e retorna uma tupla com os
+    obstáculos, a origem e o destino para cada labirinto do arquivo """
+    with open(filename, 'r') as file:
+        rows = file.readline().split(' ')[0]
+        while rows:
+            obstacles = set()
+            for i in range(int(rows)):
+                line = file.readline()[:-1]
+                for j in range(len(line)):
+                    char = line[j]
+                    if char == '-':
+                        obstacles.add((i, j))
+                    elif char == '#':
+                        origin = (i, j)
+                    elif char == '$':
+                        target = (i, j)
+            yield Board(obstacles, origin, target)
+            rows = file.readline().split(' ')[0]
 
 
 def main():
