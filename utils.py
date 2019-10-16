@@ -27,12 +27,15 @@ def inside(board, i, j):
 
 def free(board, i, j):
     """Verifica se board[i][j] está livre."""
-    return (inside(board, i, j) and (board[i][j] == 0))
+    # Note: goal square is now considered a free square.
+    return (inside(board, i, j) and (board[i][j] in (0, str2n['$'])))
 
 
 def soft_free(board, i, j, thresh=1):
     """Verifica se o valor de board[i][j] é menor que thresh."""
-    return (inside(board, i, j) and (board[i][j] < thresh))
+    return (inside(board, i, j) and
+            ((board[i][j] < thresh) or board[i][j] == str2n['$'])
+            )
 
 
 def count(n=0):

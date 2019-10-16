@@ -111,6 +111,12 @@ def seeds_gen(board, nseeds=None, only_free=False):
 
 def gen_board(i, j, *args, **kwargs):
     new_board = blank_board(i, j)
+
+    # Build walls on blank board
+    build_walls(new_board, *args, **kwargs)
+    clean_dust(new_board, thresh=min(str2n['#'], str2n['-'], str2n['$']))
+
+    # Define start and goal squares
     dist_thresh = (len(new_board) + len(new_board[0])) / 2
     start, goal = (0, 0), (0, 0)
 
@@ -121,9 +127,6 @@ def gen_board(i, j, *args, **kwargs):
     new_board[start[0]][start[1]] = str2n['$']
     new_board[goal[0]][goal[1]] = str2n['#']
 
-    build_walls(new_board, *args, **kwargs)
-    clean_dust(new_board, thresh=min(str2n['#'], str2n['-'], str2n['$']))
-
     return new_board
 
 
@@ -132,7 +135,6 @@ def write_board(board, f):
 
     for line in board:
         f.write(''.join([n2str[n] for n in line]) + '\n')
-    f.write('\n')
 
 
 def parse_board(board_str):
