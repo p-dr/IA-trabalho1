@@ -1,6 +1,5 @@
 from math import sqrt
 
-
 # Valores iguais ou menores que 1 são considerados 0.
 str2n = {'-': 4, '*': 0, '#': 2, '$': 3}
 n2str = {v: k for k, v in str2n.items()}
@@ -16,6 +15,13 @@ def euclidian_dist(pos: tuple, target: tuple) -> float:
         dy = target[1] - pos[1]
         euclidian_dist.values[pos] = sqrt(dx**2 + dy**2)
     return euclidian_dist.values[pos]
+
+
+def trapezoidal_dist(pos, goal):
+    a = abs(pos[0] - goal[0])
+    b = abs(pos[1] - goal[1])
+    d = abs(a-b)
+    return 2 ** .5 * min(a, b) + d
 
 
 def inside(board, i, j):

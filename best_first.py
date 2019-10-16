@@ -1,16 +1,10 @@
-from utils import available_moves, str2n
+from utils import available_moves, str2n, trapezoidal_dist
 from heapq import heappush, heappop
-
-
-def heuristic(pos, goal):
-    a = abs(pos[0] - goal[0])
-    b = abs(pos[1] - goal[1])
-    d = abs(a-b)
-    return 2 ** .5 * min(a, b) + d
 
 
 def search(board, start, goal):
     queue = [(0, [start])]
+    processed = set()
     path = [None]
 
     while path[-1] != goal:
@@ -24,8 +18,10 @@ def search(board, start, goal):
 
         # Append moves
         for move in available_moves(board, path[-1]):
-            heappush(queue, (heuristic(move, goal), path + [move]))
-            board[move[0]][move[1]] = .2
+            if move not in processed:
+                heappush(queue, (trapezoidal_dist(move, goal), path + [move]))
+                board[move[0]][move[1]] = .2
 
+        processed.add(curr)
     board[start[0]][start[1]] = str2n['#']
     return path
