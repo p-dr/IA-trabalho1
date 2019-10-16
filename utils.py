@@ -17,11 +17,13 @@ def euclidian_dist(pos: tuple, target: tuple) -> float:
     return euclidian_dist.values[pos]
 
 
-def trapezoidal_dist(pos, goal):
-    a = abs(pos[0] - goal[0])
-    b = abs(pos[1] - goal[1])
-    d = abs(a-b)
-    return 2 ** .5 * min(a, b) + d
+def trapezoidal_dist(pos, target):
+    if pos not in trapezoidal_dist.values:
+        a = abs(pos[0] - target[0])
+        b = abs(pos[1] - target[1])
+        d = abs(a-b)
+        trapezoidal_dist.values[pos] = 2 ** .5 * min(a, b) + d
+    return trapezoidal_dist.values[pos]
 
 
 def inside(board, i, j):
