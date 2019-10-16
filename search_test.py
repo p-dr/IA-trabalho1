@@ -23,7 +23,7 @@ def test_search(board, search_func, only_stats=False):
     ret = {'dt': dt,
            'touched': how_many(board, lambda x: x in (.2, .4, 1)),
            'visited': how_many(board, lambda x: x in (.4, 1)),
-           'len': None, 'weight': None}
+           'len': None, 'weight': None, 'path': None}
 
     if path:
         ret.update(len=len(path), weight=weight(path))
@@ -38,8 +38,8 @@ def main():
         board = gen_board(int(argv[1]), int(argv[2]))
         search_res = test_search(board, fake_eval[argv[3]].search)
 
-        if search_res:
-            path = search_res['path']
+        path = search_res['path']
+        if path:
             for i, j in path[1:-1]:
                 board[i][j] = 1
 

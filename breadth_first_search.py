@@ -20,13 +20,15 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         pos = visited.popleft()
         if pos == target:
             return calc_path(parents)
-        for move in available_moves(board, pos):
-            # if move not in processed:
-            board[move[0]][move[1]] = .2
-            visited.append(move)
-            parents[move] = pos
         if pos != origin:
+            # visitado
             board[pos[0]][pos[1]] = .4
+        for move in available_moves(board, pos):
+            if move not in processed:
+                # tocado
+                board[move[0]][move[1]] = .2
+                visited.append(move)
+                parents[move] = pos
         processed.add(pos)
 
     return None
