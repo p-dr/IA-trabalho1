@@ -36,6 +36,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
 
     while len(open_list) != 0:
         pos = heappop(open_list)[1]
+        board[pos[0]][pos[1]] = .4
         if pos == target:
             return calc_path(parents)
         for move in available_moves(board, pos):
@@ -47,7 +48,6 @@ def search(board: list, origin: tuple, target: tuple) -> list:
                     i = [l[1] for l in open_list].index(move)
                     old_f = open_list[i][0]
                     if f < old_f:
-                        board[move[0]][move[1]] = .4
                         open_list[i][0] = f
                         heapify(open_list)
                         parents[move] = pos
