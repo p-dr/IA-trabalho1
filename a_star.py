@@ -1,5 +1,5 @@
 from math import sqrt
-from utils import available_moves
+from utils import available_moves, euclidian_dist
 from heapq import heappop, heappush, heapify
 
 
@@ -12,17 +12,8 @@ def calc_g(pos1: tuple, pos2: tuple) -> float:
     return new_g
 
 
-def calc_h(pos: tuple, target: tuple) -> float:
-    """ Distância euclidiana de pos a target """
-    if pos not in calc_h.values:
-        dx = target[0] - pos[0]
-        dy = target[1] - pos[1]
-        calc_h.values[pos] = sqrt(dx**2 + dy**2)
-    return calc_h.values[pos] 
-
-
 def calc_f(pos1: tuple, pos2: tuple, target: tuple) -> float:
-    return calc_g(pos1, pos2) + calc_h(pos2, target)
+    return calc_g(pos1, pos2) + euclidian_dist(pos2, target)
 
 
 def search(board: list, origin: tuple, target: tuple) -> list:
@@ -40,7 +31,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
     closed_list = set()
     parents = {}
     calc_g.values = {origin: 0}
-    calc_h.values = {}
+    euclidian_dist.values = {}
     ###################################
 
     while len(open_list) != 0:

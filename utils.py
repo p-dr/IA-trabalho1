@@ -1,9 +1,21 @@
+from math import sqrt
+
+
 # Valores iguais ou menores que 1 são considerados 0.
 str2n = {'-': 4, '*': 0, '#': 2, '$': 3}
 n2str = {v: k for k, v in str2n.items()}
 
 orth_steps = ((1, 0), (0, 1), (-1, 0), (0, -1))
 steps = ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1))
+
+
+def euclidian_dist(pos: tuple, target: tuple) -> float:
+    """ Distância euclidiana de pos a target """
+    if pos not in euclidian_dist.values:
+        dx = target[0] - pos[0]
+        dy = target[1] - pos[1]
+        euclidian_dist.values[pos] = sqrt(dx**2 + dy**2)
+    return euclidian_dist.values[pos] 
 
 
 def insort(a, l):

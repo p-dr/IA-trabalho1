@@ -14,11 +14,9 @@ fake_eval = {'dfs': dfs, 'bfs': bfs, 'bf': bf, 'a': a}
 
 def test_search(board, search_func, only_stats=False):
     se = get_start_end(board)
-    board[se[1][0]][se[1][1]] = 0
     t0 = t()
     path = search_func(board, *se)
     dt = t() - t0
-    board[se[1][0]][se[1][1]] = str2n['$']
 
     ret = {'dt': dt,
            'touched': how_many(board, lambda x: x in (.2, .4, 1)),
