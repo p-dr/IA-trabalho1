@@ -28,6 +28,7 @@ def search(board: list, origin: tuple, target: tuple) -> list:
                 board[move[0]][move[1]] = .2
                 visited.append(move)
                 parents[move] = pos
+                processed.add(move)
         processed.add(pos)
 
     return None
