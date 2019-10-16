@@ -1,4 +1,5 @@
-from utils import soft_free, count, available_steps, str2n, n2str
+from utils import (count, str2n, n2str, orth_steps, steps,
+                   inside)
 from random import random, choice
 from math import floor
 from sys import argv
@@ -24,10 +25,25 @@ def clean_dust(board, thresh=1):
                 board[i][j] = 0
 
 
-def all_free(board, thresh=1e-7):
-    return [[i, j] for i in range(len(board))
-            for j in range(len(board[0]))
-            if soft_free(board, i, j, thresh)]
+def free(board, i, j):
+    """Verifica se board[i][j] está livre."""
+    # Note: goal square is now considered a free square.
+    return (inside(board, i, j) and (not board[i][j]))
+
+
+def available_steps(board, pos, orth=False):
+    """Retorna todas os passos possíveis (e.g. [(1, 1), (0, -1)])
+    em board a partir de pos. orth=True para só passos ortogonais."""
+    i0, j0 = pos
+    ret = []
+
+    for di, dj in [steps, orth_steps][orth]:
+        j, i = j0 + dj, i0 + di
+
+        if free(board, i, j):
+            ret.append((di, dj))
+
+    return ret
 
 
 def random_step(board, pos, orth):
@@ -77,27 +93,23 @@ def random_walk(board, start, trail, turn_func,
     return pos
 
 
-def build_walls(board, nseeds=None, turn_prob=.2, end_prob=.0,
-                only_free=False):
+def build_walls(board, nseeds=None, turn_prob=.2, end_prob=.0):
     # only_free takes lot of time
     if nseeds is None:
         nseeds = int(len(board) * len(board[0]) / 10)
 
     for i in range(nseeds):
-        seed = seeds_gen(board, 1, only_free=only_free)
+        seed = seeds_gen(board, 1)
         random_walk(board, seed, str2n['-'], turn_prob, end_prob, orth=True)
 
 
-def seeds_gen(board, nseeds=None, only_free=False):
+def seeds_gen(board, nseeds=None):
     # only_free takes lot of time
     seeds = []
 
     while len(seeds) < nseeds:
-        if only_free:
-            seed = choice(all_free(board, thresh=1))
-        else:
-            seed = [floor(random() * len(board)),
-                    floor(random() * len(board[0]))]
+        seed = [floor(random() * len(board)),
+                floor(random() * len(board[0]))]
 
         if nseeds == 1:
             return seed
@@ -112,10 +124,6 @@ def seeds_gen(board, nseeds=None, only_free=False):
 def gen_board(i, j, *args, **kwargs):
     new_board = blank_board(i, j)
 
-    # Build walls on blank board
-    build_walls(new_board, *args, **kwargs)
-    clean_dust(new_board, thresh=min(str2n['#'], str2n['-'], str2n['$']))
-
     # Define start and goal squares
     dist_thresh = (len(new_board) + len(new_board[0])) / 2
     start, goal = (0, 0), (0, 0)
@@ -126,6 +134,10 @@ def gen_board(i, j, *args, **kwargs):
 
     new_board[start[0]][start[1]] = str2n['$']
     new_board[goal[0]][goal[1]] = str2n['#']
+
+    # Build obstacle walls
+    build_walls(new_board, *args, **kwargs)
+    clean_dust(new_board, thresh=min(str2n['#'], str2n['-'], str2n['$']))
 
     return new_board
 
