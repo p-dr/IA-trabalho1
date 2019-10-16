@@ -6,19 +6,6 @@ orth_steps = ((1, 0), (0, 1), (-1, 0), (0, -1))
 steps = ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1))
 
 
-def insort(a, l):
-    """Insere a na lista l ordenada do maior para o menor."""
-    item, label = a
-    i = 0
-    for i in range(len(l)):
-        if label > l[i][1]:
-            break
-    else:
-        i += 1
-
-    l[i:i] = a,
-
-
 def inside(board, i, j):
     if j >= 0 and j < len(board[0]):
         return i >= 0 and i < len(board)
@@ -28,14 +15,7 @@ def inside(board, i, j):
 def free(board, i, j):
     """Verifica se board[i][j] está livre."""
     # Note: goal square is now considered a free square.
-    return (inside(board, i, j) and (board[i][j] != 4))
-
-
-def soft_free(board, i, j, thresh=1):
-    """Verifica se o valor de board[i][j] é menor que thresh."""
-    return (inside(board, i, j) and
-            ((board[i][j] < thresh) or board[i][j] == str2n['$'])
-            )
+    return (inside(board, i, j) and (board[i][j] in (0, str2n['$'])))
 
 
 def count(n=0):
