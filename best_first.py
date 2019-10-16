@@ -4,6 +4,7 @@ from heapq import heappush, heappop
 
 def search(board, start, goal):
     queue = [(0, [start])]
+    trapezoidal_dist.values = {start: 0}
     processed = set()
     path = [None]
 

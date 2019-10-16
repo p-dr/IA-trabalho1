@@ -1,10 +1,11 @@
 from celluloid import Camera
+import matplotlib.pyplot as plt
 from view import show_board
-from utils import available_moves, show_board
+from utils import available_moves
 from collections import deque
 
 
-def search(board: list, origin: tuple, target: tuple, animate=False:bool) -> list:
+def search(board: list, origin: tuple, target: tuple) -> list:
 
     def calc_path(parents: dict) -> list:
         """ Retorna o caminho desde a origem até o destino """
@@ -12,6 +13,9 @@ def search(board: list, origin: tuple, target: tuple, animate=False:bool) -> lis
         while path[-1] != origin:
             path.append(parents[path[-1]])
         return path
+
+    fig = show_board(board, show=False)
+    camera = Camera(fig)
 
     visited = deque()
     visited.append(origin)
@@ -21,6 +25,8 @@ def search(board: list, origin: tuple, target: tuple, animate=False:bool) -> lis
     while len(visited) != 0:
         pos = visited.popleft()
         if pos == target:
+            animation = camera.animate()
+            animation.save('test.gif', writer='imagemagick')
             return calc_path(parents)
 
         # Invertido para ir nas diagonais por último.
@@ -33,5 +39,10 @@ def search(board: list, origin: tuple, target: tuple, animate=False:bool) -> lis
             board[pos[0]][pos[1]] = .4
         processed.add(pos)
 
+        show_board(board, fig=fig, show=False)
+        camera.snap()
 
+
+    animation = camera.animate()
+    animation.save('test.gif', writer='imagemagick')
     return None
