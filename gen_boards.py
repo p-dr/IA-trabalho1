@@ -166,9 +166,11 @@ def main():
 
     I, J = int(argv[3]), int(argv[4])
 
-    with open(f'{argv[2]}_{argv[1]}_{I}x{J}.boards', 'w') as f:
-        for i in range(int(argv[1])):
+    with open(f'board_database/{argv[1]}_{argv[2]}_{I}x{J}.boards', 'w') as f:
+        for i in range(int(argv[2])):
+            print(f'Writing board {i}/{argv[2]}...', end='\r')
             write_board(gen_board(I, J), f)
+    print('Done.' + ' ' * 50)
 
 
 if __name__ == '__main__':

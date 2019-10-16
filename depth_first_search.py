@@ -19,7 +19,9 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         pos = visited.pop(0)
         if pos == target:
             return calc_path(parents)
-        for move in available_moves(board, pos):
+
+        # Invertido para ir nas diagonais por último.
+        for move in available_moves(board, pos)[::-1]:
             # if move not in processed:
             board[move[0]][move[1]] = .2
             visited.insert(0, move)

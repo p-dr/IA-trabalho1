@@ -1,4 +1,4 @@
-# Valores menores que 1 são considerados 0.
+# Valores iguais ou menores que 1 são considerados 0.
 str2n = {'-': 4, '*': 0, '#': 2, '$': 3}
 n2str = {v: k for k, v in str2n.items()}
 
@@ -91,3 +91,8 @@ def weight(path):
         ret += ((path[i][0] - path[i-1][0]) ** 2 +
                 (path[i][1] - path[i-1][1]) ** 2) ** .5
     return ret
+
+
+def how_many(board, bool_func):
+    """ Conta quantos valores em board fazer bool_func retornar True."""
+    return sum(sum(map(bool_func, line)) for line in board)
