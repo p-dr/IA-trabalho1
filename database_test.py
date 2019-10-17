@@ -21,14 +21,16 @@ else:
 
 for boards_file in file_list:
     outfname = boards_file.stem + '.tsv'
-    outpath = summaries_dir/outfname
+    mean_outpath = summaries_dir/('mean_' + outfname)
 
-    if outpath.exists() and ('-r' not in argv):
+    if mean_outpath.exists() and ('-r' not in argv):
         print(f'"{str(boards_file)}" exists on filesystem. Add -r to overwrite.')
         continue
 
     print('\nCURRENT DATABASE:', boards_file.name, '\n')
-    summary = pd.DataFrame()
+    std_outpath = summaries_dir/('std_' + outfname)
+    summary_mean = pd.DataFrame()
+    summary_std = pd.DataFrame()
 
     for s, name in zip(search_algs, names):
         print('Using method:', name)
@@ -45,9 +47,16 @@ for boards_file in file_list:
         ### SAVE SEARCH DATA
         search_data.to_csv(out_dir/name/outfname, sep='\t')
         s_means = search_data.mean()
-        summary = pd.concat([summary, s_means], axis=1, sort=True)
+        s_stds = search_data.std()
+        summary_mean = pd.concat([summary_mean, s_means], axis=1, sort=True)
+        summary_std = pd.concat([summary_std, s_stds], axis=1, sort=True)
 
-    ### SAVE SUMMARY
-    summary.columns = names
-    summary.to_csv(outpath, sep='\t')
-    print(summary)
+    ### SAVE SUMMARIES
+    summary_mean.columns = names
+    summary_std.columns = names
+    summary_mean.to_csv(mean_outpath, sep='\t')
+    summary_std.to_csv(std_outpath, sep='\t')
+    print('MEANS')
+    print(summary_mean)
+    print('STANDARD DEVS.')
+    print(summary_std)

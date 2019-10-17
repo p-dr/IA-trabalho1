@@ -147,6 +147,7 @@ def write_board(board, f):
 
     for line in board:
         f.write(''.join([n2str[n] for n in line]) + '\n')
+    f.write('\n')
 
 
 def parse_board(board_str):
@@ -159,17 +160,14 @@ def parse_board(board_str):
 
 
 def read_boards(path):
-    """Lê arquivo de tabuleiros no formato .boards e retorna lista com
-       todos eles em formato numérico."""
+    """Lê arquivo de tabuleiros no formato .boards, yielding os tabuleiros a
+    cada leitura."""
 
     with open(path, 'r') as f:
         content = f.read()
 
-    boards = []
     for board_str in content.split('\n\n')[:-1]:
-        boards.append(parse_board(board_str))
-
-    return boards
+        yield parse_board(board_str)
 
 
 def main():
