@@ -1,5 +1,5 @@
 from view import plot_board
-from utils import available_moves
+import utils as u
 from collections import deque
 from celluloid import Camera
 
@@ -26,7 +26,7 @@ def search(board: list, origin: tuple,
             return calc_path(parents)
         # marca como visitado
         board[pos[0]][pos[1]] = .4
-        for move in available_moves(board, pos):
+        for move in u.available_moves(board, pos):
             if move not in processed:
                 # marca como tocado
                 board[move[0]][move[1]] = .2

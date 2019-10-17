@@ -1,16 +1,10 @@
 from celluloid import Camera
-import depth_first_search as dfs
-import breadth_first_search as bfs
-import best_first as bf
-import a_star as a
 from gen_boards import gen_board
-from utils import get_start_end, weight, str2n, how_many
+from utils import get_start_end, weight, str2n, how_many, search_algs, names
 from view import figure, plot_board
 from sys import argv
 from time import time as t
-
-
-fake_eval = {'dfs': dfs, 'bfs': bfs, 'bf': bf, 'a': a}
+from copy import deepcopy
 
 
 def test_search(board, search_func, camera, only_stats=False):
@@ -35,22 +29,32 @@ def test_search(board, search_func, camera, only_stats=False):
 
 
 def main():
-    board = gen_board(int(argv[1]), int(argv[2]))
+    raw_board = gen_board(int(argv[1]), int(argv[2]))
+    timestamp = str(int(t()))
 
-    fig = figure()
-    camera = Camera(fig)
-    search_res = test_search(board, fake_eval[argv[3]].search,
-                             camera=camera)
+    for s, name in zip(search_algs, names):
+        print(f'Usando algoritmo {name}...')
+        board = deepcopy(raw_board)
 
-    path = search_res['path']
-    if path:
-        for i, j in path[1:-1]:
-            board[i][j] = 1
+        fig = figure()
+        camera = Camera(fig)
+        search_res = test_search(board, s.search,
+                                 camera=camera)
 
-    camera.snap()
-    animation = camera.animate()
-    animation.save('gifs/dfs.gif', writer='imagemagick')
-    print(search_res)
+        path = search_res['path']
+        if path:
+            for i, j in path[1:-1]:
+                board[i][j] = 1
+
+        # Show path for longer time
+        for i in range(10):
+            plot_board(board)
+            camera.snap()
+
+        animation = camera.animate()
+        outname = f'{timestamp}_{name}_{argv[1]}x{argv[2]}.gif'
+        animation.save('gifs/' + outname, writer='imagemagick')
+        print(search_res)
 
 
 if __name__ == '__main__':

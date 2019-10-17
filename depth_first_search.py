@@ -1,8 +1,11 @@
-from utils import available_moves
+from celluloid import Camera
+from view import plot_board
 from collections import deque
+import utils as u
 
 
-def search(board: list, origin: tuple, target: tuple) -> list:
+def search(board: list, origin: tuple,
+           target: tuple, camera: Camera = None) -> list:
 
     def calc_path(parents: dict) -> list:
         """ Retorna o caminho desde a origem até o destino """
@@ -25,12 +28,16 @@ def search(board: list, origin: tuple, target: tuple) -> list:
         board[pos[0]][pos[1]] = .4
 
         # Invertido para ir nas diagonais por último.
-        for move in available_moves(board, pos)[::-1]:
+        for move in u.available_moves(board, pos)[::-1]:
             if move not in processed:
                 # marca como tocado
                 board[move[0]][move[1]] = .2
                 visited.appendleft(move)
                 processed.add(move)
                 parents[move] = pos
+
+        if camera is not None:
+            plot_board(board)
+            camera.snap()
 
     return None

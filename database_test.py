@@ -1,8 +1,4 @@
-import depth_first_search as dfs
-import breadth_first_search as bfs
-import best_first as bf
-import a_star as a
-
+from utils import search_algs, names
 from search_test import test_search
 from gen_boards import read_boards
 
@@ -14,9 +10,6 @@ from sys import argv
 boards_dir = Path('board_database')
 out_dir = Path('test_out')
 summaries_dir = out_dir/'summaries'
-
-search_algs = (dfs, bfs, bf, a)
-names = ('DFS', 'BFS', 'Best_first', 'A_star')
 
 if '--all' in argv:
     file_list = boards_dir.glob('*')

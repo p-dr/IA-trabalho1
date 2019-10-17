@@ -1,11 +1,13 @@
+from celluloid import Camera
 from view import plot_board
-from utils import available_moves, str2n, trapezoidal_dist
+import utils as u
 from heapq import heappush, heappop
 
 
-def search(board, start, goal, camera=None):
+def search(board: list, start: tuple,
+           goal: tuple, camera: Camera = None) -> list:
     queue = [(0, [start])]
-    trapezoidal_dist.values = {start: 0}
+    u.trapezoidal_dist.values = {start: 0}
     processed = set()
     path = [None]
 
@@ -19,9 +21,10 @@ def search(board, start, goal, camera=None):
         board[curr[0]][curr[1]] = .4
 
         # Append moves
-        for move in available_moves(board, path[-1]):
+        for move in u.available_moves(board, path[-1]):
             if move not in processed:
-                heappush(queue, (trapezoidal_dist(move, goal), path + [move]))
+                heappush(queue, (u.trapezoidal_dist(move, goal),
+                                 path + [move]))
                 board[move[0]][move[1]] = .2
 
         if camera is not None:
@@ -29,5 +32,5 @@ def search(board, start, goal, camera=None):
             camera.snap()
 
         processed.add(curr)
-    board[start[0]][start[1]] = str2n['#']
+    board[start[0]][start[1]] = u.str2n['#']
     return path

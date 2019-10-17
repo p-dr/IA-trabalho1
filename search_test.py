@@ -1,15 +1,12 @@
-import depth_first_search as dfs
-import breadth_first_search as bfs
-import best_first as bf
-import a_star as a
 from gen_boards import gen_board
-from utils import get_start_end, weight, str2n, how_many
+from utils import get_start_end, weight, str2n, how_many, search_algs
 from view import show_board
 from sys import argv
 from time import time as t
 
 
-fake_eval = {'dfs': dfs, 'bfs': bfs, 'bf': bf, 'a': a}
+fake_eval = {k: v for k, v in zip(('dfs', 'bfs', 'bf', 'a'),
+                                  search_algs)}
 
 
 def test_search(board, search_func, only_stats=False):

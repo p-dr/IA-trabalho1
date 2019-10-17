@@ -1,3 +1,8 @@
+import depth_first_search as dfs
+import breadth_first_search as bfs
+import best_first as bf
+import a_star as a
+
 from math import sqrt
 
 # Valores iguais ou menores que 1 são considerados 0.
@@ -6,6 +11,10 @@ n2str = {v: k for k, v in str2n.items()}
 
 orth_steps = ((1, 0), (0, 1), (-1, 0), (0, -1))
 steps = ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1))
+
+# Compilação das funções de busca
+search_algs = (dfs, bfs, bf, a)
+names = ('DFS', 'BFS', 'Best_first', 'A_star')
 
 
 def euclidian_dist(pos: tuple, target: tuple) -> float:
@@ -22,7 +31,7 @@ def trapezoidal_dist(pos, target):
         a = abs(pos[0] - target[0])
         b = abs(pos[1] - target[1])
         d = abs(a-b)
-        trapezoidal_dist.values[pos] = 2 ** .5 * min(a, b) + d
+        trapezoidal_dist.values[pos] = sqrt(2) * min(a, b) + d
     return trapezoidal_dist.values[pos]
 
 
