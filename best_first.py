@@ -19,16 +19,18 @@ def search(board: list, start: tuple,
         # -1 ou 0?
         path = heappop(queue)[1]
         curr = path[-1]
-        # marca como visitado
-        board[curr[0]][curr[1]] = .4
+        if curr not in (start, goal):
+            # marca como visitado
+            board[curr[0]][curr[1]] = .4
 
         # Append moves
         for move in u.available_moves(board, path[-1]):
             if move not in processed:
                 heappush(queue, (u.trapezoidal_dist(move, goal),
                                  path + [move]))
-                # marca como tocado
-                board[move[0]][move[1]] = .2
+                if move != goal:
+                    # marca como visitado
+                    board[move[0]][move[1]] = .2
                 processed.add(move)
 
         if camera is not None:

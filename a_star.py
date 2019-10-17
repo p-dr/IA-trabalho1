@@ -39,14 +39,16 @@ def search(board: list, origin: tuple,
 
     while len(open_list) != 0:
         pos = heappop(open_list)[1]
-        # marca como visitado
-        board[pos[0]][pos[1]] = .4
         if pos == target:
             return calc_path(parents)
+        if pos != origin:
+            # marca como visitado
+            board[pos[0]][pos[1]] = .4
         for move in u.available_moves(board, pos):
             if move not in closed_list:
-                # marca como tocado
-                board[move[0]][move[1]] = .2
+                if move != target:
+                    # marca como visitado
+                    board[move[0]][move[1]] = .2
                 f = calc_f(pos, move, target)
                 try:
                     # i = posição de move em open_list

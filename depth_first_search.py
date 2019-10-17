@@ -24,14 +24,16 @@ def search(board: list, origin: tuple,
         pos = visited.popleft()
         if pos == target:
             return calc_path(parents)
-        # marca como visitado
-        board[pos[0]][pos[1]] = .4
+        if pos != origin:
+            # marca como visitado
+            board[pos[0]][pos[1]] = .4
 
         # Invertido para ir nas diagonais por último.
         for move in u.available_moves(board, pos)[::-1]:
             if move not in processed:
-                # marca como tocado
-                board[move[0]][move[1]] = .2
+                if move != target:
+                    # marca como tocado
+                    board[move[0]][move[1]] = .2
                 visited.appendleft(move)
                 processed.add(move)
                 parents[move] = pos
