@@ -15,7 +15,7 @@ def calc_g(pos1: tuple, pos2: tuple) -> float:
 
 
 def calc_f(pos1: tuple, pos2: tuple, target: tuple) -> float:
-    return calc_g(pos1, pos2) + u.euclidian_dist(pos2, target)
+    return calc_g(pos1, pos2) + u.trapezoidal_dist(pos2, target)
 
 
 def search(board: list, origin: tuple,
@@ -34,7 +34,7 @@ def search(board: list, origin: tuple,
     closed_list = set()
     parents = {}
     calc_g.values = {origin: 0}
-    u.euclidian_dist.values = {}
+    u.trapezoidal_dist.values = {}
     ###################################
 
     while len(open_list) != 0:
