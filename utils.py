@@ -26,7 +26,8 @@ def euclidian_dist(pos: tuple, target: tuple) -> float:
     return euclidian_dist.values[pos]
 
 
-def trapezoidal_dist(pos, target):
+def trapezoidal_dist(pos: tuple, target: tuple) -> float:
+    """ Distância trapezoidal de pos a target """
     if pos not in trapezoidal_dist.values:
         a = abs(pos[0] - target[0])
         b = abs(pos[1] - target[1])
@@ -36,6 +37,7 @@ def trapezoidal_dist(pos, target):
 
 
 def inside(board, i, j):
+    """ Verifica se (i, j) pertence ao tabuleiro """
     if j >= 0 and j < len(board[0]):
         return i >= 0 and i < len(board)
     return False
