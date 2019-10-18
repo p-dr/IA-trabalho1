@@ -4,31 +4,31 @@ import utils as u
 from heapq import heappush, heappop
 
 
-def search(board: list, start: tuple,
-           goal: tuple, camera: Camera = None) -> list:
-    queue = [(0, [start])]
-    u.trapezoidal_dist.values = {start: 0}
+def search(board: list, origin: tuple,
+           target: tuple, camera: Camera = None) -> list:
+    queue = [(0, [origin])]
+    u.trapezoidal_dist.values = {origin: 0}
     processed = set()
-    processed.add(start)
+    processed.add(origin)
     path = [None]
 
-    while path[-1] != goal:
+    while path[-1] != target:
         if not queue:
             path = None
             break
         # -1 ou 0?
         path = heappop(queue)[1]
         curr = path[-1]
-        if curr not in (start, goal):
+        if curr not in (origin, target):
             # marca como visitado
             board[curr[0]][curr[1]] = .4
 
         # Append moves
         for move in u.available_moves(board, path[-1]):
             if move not in processed:
-                heappush(queue, (u.trapezoidal_dist(move, goal),
+                heappush(queue, (u.trapezoidal_dist(move, target),
                                  path + [move]))
-                if move != goal:
+                if move != target:
                     # marca como visitado
                     board[move[0]][move[1]] = .2
                 processed.add(move)
@@ -37,5 +37,5 @@ def search(board: list, start: tuple,
             plot_board(board)
             camera.snap()
 
-    board[start[0]][start[1]] = u.str2n['#']
+    board[origin[0]][origin[1]] = u.str2n['#']
     return path

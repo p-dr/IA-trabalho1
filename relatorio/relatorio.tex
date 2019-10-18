@@ -1,8 +1,33 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=2cm]{geometry}
+\usepackage{listings}
 
 \begin{document}
+\section{Introdução}
+Tivemos como objetivo desse trabalho a elaboração e comparação de desempenho de quatro diferentes algoritmos de busca - sendo duas buscas cegas e duas buscas informadas.
+
+\begin{itemize}
+	\item As buscas cegas são:
+	\begin{itemize}
+		\item Busca em Profundidade;
+		\item Busca em Largura.
+	\end{itemize}
+	\item As buscas informadas são:
+	\begin{itemize}
+		\item Best-first Search;
+		\item A*.
+	\end{itemize}
+\end{itemize}
+
+	Para isso foram utilizados tabuleiros tais como foram descritos na especificação do trabalho com uma origem, um destino e obstáculos distribuídos, os quais serão gerados a partir de um script de autoria própria.
+	As métricas utilizadas para comparar os algoritmos são: tempo de execução, quantidade de casas no caminho encontrado, quantidade de casas analisadas (um vizinho no caso das buscas cegas e casas consideradas nas buscas informadas), quantidade de casas visitadas durante a execução e tamanho do caminho encontrado.
+	O código foi desenvolvido em Python 3, sendo necessária a instalação do pacote celluloid (utilizado pelo grupo para gerar animações com a execução dos algoritmos). Para isso, basta executar o seguinte comando no terminal:
+
+\begin{verbatim}
+sudo pip3 install celluloid
+\end{verbatim}
+
 \section{Tabuleiros}
 Foram criadas funções para criação, leitura e escrita de tabuleiros que serão usados no presente trabalho. Para a manipulação e visualização, mostrou-se mais fácil utilizar matrizes numéricas para representar os objetos sobre o tabuleiro, enquanto nos foi requisitado o uso de representação com caracteres para as casas na leitura e escrita dos tabuleiros. Desta forma, estabeleceu-se o código apresentado pela tabela \ref{codigo}, implementado no dicionário \verb|str2n| contido no arquivo \verb|utils.py|.
 
@@ -75,12 +100,24 @@ Para os experimentos são usadas \verb|turn_func = 0.2| e \verb|end_func = 0|, d
 [Resultados paredes]
 
 \section{Algoritmos de busca}
+Todos os algoritmos de busca possuem o mesmo cabeçalho:
+
+\begin{lstlisting}
+def search(board: list, origin: tuple,
+	target: tuple, camera: Camera = None) -> list:
+\end{lstlisting}
+
+em que \verb|board| é o tabuleiro, \verb|origin| é a tupla da casa de início, \verb|target| é a tupla da casa de destino e \verb|camera| é utilizada somente na criação de imagens GIF para visualização do caminho tomado pelo algoritmo.
 
 \subsection{Busca cega}
+Nessa modalidade de busca, o algoritmo não faz uso de nenhuma informação sobrea localização de casa-alvo. Os tipos implementados são descritos a seguir.
 \subsubsection{Busca em profundidade}
 \subsubsection{Busca em largura}
 
 \subsection{Busca informada}
+Nos algoritmos de busca informada, utiliza-se o conhecimento das coordenadas do alvo para guiar a procura. Contudo, a presença e localização dos obstáculos não é conhecida, e faz-se necessário que o algoritmo determine os melhores caminhos alternativos de desvio.\\
+
+Como nas buscas cegas, cria-se uma lista de casas a serem visitadas conforme se explora o tabuleiro. Contudo, a diferença essencial é a forma como os elementos são retirados dessa lista: A cada casa 
 \subsubsection{Busca \emph{best-firt}}
 
 Esse algoritmo de busca é implementado pela função

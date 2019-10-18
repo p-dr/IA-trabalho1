@@ -19,11 +19,15 @@ elif len(argv) == 1:
 else:
     file_list = (Path(f) for f in argv[1:])
 
+redo_flag = '-r' in argv
+if redo_flag:
+    argv.remove('-r')
+
 for boards_file in file_list:
     outfname = boards_file.stem + '.tsv'
     mean_outpath = summaries_dir/('mean_' + outfname)
 
-    if mean_outpath.exists() and ('-r' not in argv):
+    if mean_outpath.exists() and not redo_flag:
         print(f'"{str(boards_file)}" exists on filesystem. Add -r to overwrite.')
         continue
 
