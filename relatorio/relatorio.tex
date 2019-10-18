@@ -117,10 +117,30 @@ Nessa modalidade de busca, o algoritmo não faz uso de nenhuma informação sobr
 \subsection{Busca informada}
 Nos algoritmos de busca informada, utiliza-se o conhecimento das coordenadas do alvo para guiar a procura. Contudo, a presença e localização dos obstáculos não é conhecida, e faz-se necessário que o algoritmo determine os melhores caminhos alternativos de desvio.\\
 
-Como nas buscas cegas, cria-se uma lista de casas a serem visitadas conforme se explora o tabuleiro. Contudo, a diferença essencial é a forma como os elementos são retirados dessa lista: A cada casa 
-\subsubsection{Busca \emph{best-firt}}
+Como nas buscas cegas, cria-se uma lista de casas a serem visitadas conforme se explora o tabuleiro. Contudo, a diferença essencial é a forma como os elementos são retirados dessa lista: A cada casa com coordenadas \verb|pos| que se pretende adicionar à lista, utiliza-se uma função chamada \verb|f(pos)|, que, em posse do conhecimento da posição da casa-objetivo, fornece um valor peso para a nova casa explorada. Esses pesos são interpretados como o quanto será favorável explorar aquele casa ou não, de forma que ao ser inserida a casa na lista, cria-se naturalmente uma fila de prioridades em função da ordem desses valores peso.\\
 
-Esse algoritmo de busca é implementado pela função
+Essa função \verb|f(pos)| ainda se desdobra em dois termos:
 
+\begin{verbatim}
+f(pos) = g(pos) + h(pos),
+\end{verbatim}
+
+sendo que \verb|g(pos)| retorna a distância de \verb|pos| até a casa inicial, isto é, o quanto teríamos nos deslocado durante a busca desde o início caso estivéssemos em \verb|pos|; e \verb|f(pos)| retorna uma estimativa da distância entre \verb|pos| e o alvo.\\
+
+O caso mais geral desse tipo de busca, que abrange todas as buscas que usam a função \verb|f(pos)| como descrito é a busca A* (pronunciada "A estrela"). No caso específico em que \verb|g(pos)| seja 0, o algoritmo é chamado, \emph{algoritmo de Dijkstra}, não utilizado no presente trabalho. Se, por sua vez, \verb|g(pos)| seja definida como 0, o algoritmo é chamado busca \emph{best-first}.
+
+
+\subsubsection{Busca \emph{best-first}}
+
+Esse algoritmo de busca é implementado no arquivo \verb|best_first.py|.
+A função \verb|search| no arquivo, responsável por executar a busca, utiliza um set com as casas visitadas, para se certificar de que não entre em loop visitando a mesma casa mais de uma vez.\\
+
+A lista \verb|queue| é justamente a responsável por guardar os camihos percorridos. Cada vez que uma casa é visitada, ela é substituída pela concatenação entre ela e seus filhos, de forma que cada item de \verb|queue| seja uma tupla com o caminho todo percorrido até uma determinada casa e o valor de peso retornado pela função heurística. As funções \verb|heappop| e \verb|heappush| do módulo \verb|heap| são responsáveis por inserir e retirar os caminhos da lista mantendo sua ordem de prioridades.
 \subsubsection{Busca A*}
+Como antes mencionado, a busca por novas células através do algoritmo A* é feita utilizando dois cálculos: uma função \verb|g| que determina o custo do caminho da origem até a posição atual, e outra função \verb|h| (heurística) que determina um custo estimado otimista do caminho da posição atual até o destino. Estamos interessados em uma função \verb|f| tal que \verb|f = g + h|.\\
+
+O cálculo de g está implementado no arquivo \verb|a_star.py|, na função \verb|calc_g(pos1, pos2)|, sendo \verb|pos2| a posição que se deseja explorar e \verb|pos1| o nó pai de \verb|pos2| no tabuleiro. Inicialmente, a função \verb|calc_g()| determina se \verb|pos1| e \verb|pos2| diferem em apenas uma dimensão ou em ambas (variável \verb|dist|): caso \verb|dist| seja igual a 1 sabemos que o passo foi dado em uma mesma dimensão, portanto o peso do passo será igual a 1; caso contrário (\verb|dist| igual a 2) sabemos que o passo foi dado em uma diagonal, então o peso do passo será igual a \(\sqrt{2}\). Por fim, obtemos o valor de \verb|g| para \verb|pos2| somando o valor anterior com o valor de \verb|g| já calculado anteriormente para \verb|pos1|, e armazenamos esse valor em uma estrutura de dicionário caso já não o possua ou o novo valor seja menor que o anterior.\\
+
+A cálculo de \verb|h| pode ser obtido através de duas funções (heurísticas) diferentes, ambas implementadas no arquivo \verb|util.py|: distância euclidiana (função \verb|euclidian_dist(pos, target)|) e distância trapezoidal (função \verb|trapezoidal_dist(pos, target)|). \verb|euclidian_dist| é a distância euclidiana (linha reta) entre \verb|pos| e \verb|target|, \verb|trapezoidal_dist| simula a distância que seria de fato percorrida caso não houvessem obstáculos, portanto segue o formato de um trapézio. Por conta disso, a primeira função é mais otimista do que a segunda e, portanto, espera-se que a primeira seja mais lenta.\\
+A busca A* está implementada no arquivo \verb|a_star.py|, na função \verb|search(board, origin, target)|, onde \verb|board| é o tabuleiro (labirinto), \verb|origin| é a posição inicial e \verb|target| é a posição destino. Dentro dessa função está declarada a função \verb|calc_path(parents)|, cujo objetivo é calcular o caminho percorrido desde \verb|target| até \verb|origin|, utilizando o dicionário \verb|parents| que foi gerado durante a busca e representa a posição pai de cada posição visitada. Na busca em si utilizamos 5 estruturas de dados: \verb|open_list| é uma fila de prioridades que guarda as posições que foram analisadas porém ainda não foram totalmente processadas (ou seja, seus filhos não foram analisados), o parâmetro de ordenação da fila de prioridades é o valor de \verb|f| de cada posição; \verb|closed_list| é uma estrutura do tipo set que guarda as posições já totalmente processadas, ele é utilizado para verificar se a próxima posição a ser analisada ainda não foi processada (caso tenha sido, essa posição é ignorada), o tipo set foi utilizado para otimizar a busca e inserção, cujas complexidades são O(1) (constantes); \verb|parents| é um dicionário (par chave-valor) onde as chaves são posições do tabuleiro e o valor é o respectivo pai da posição na chave; \verb|calc_g.values| é um dicionário pertencente à função \verb|calc_g| e guarda os cálculos do menor \verb|g| para cada posição \verb|pos2| do tabuleiro, partindo de \verb|pos1|; \verb|trapezoidal_dist.values| pertence à função \verb|trapezoidal_dist| e guarda os cálculos da heurística \verb|h| em distância trapezoidal para cada posição pos do tabuleiro até o destino. No loop principal da busca, o algoritmo checa de \verb|open_list| está vazio, retira a próxima posição de \verb|open_list| (com menor valor de f), checa se a posição é o destino (caso for, encerra a busca e calcula o caminho),
 \end{document}

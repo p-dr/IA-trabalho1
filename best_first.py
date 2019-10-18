@@ -8,15 +8,14 @@ def search(board: list, origin: tuple,
            target: tuple, camera: Camera = None) -> list:
     queue = [(0, [origin])]
     u.trapezoidal_dist.values = {origin: 0}
-    processed = set()
-    processed.add(origin)
+    processed = {origin}
     path = [None]
 
     while path[-1] != target:
         if not queue:
             path = None
             break
-        # -1 ou 0?
+
         path = heappop(queue)[1]
         curr = path[-1]
         if curr not in (origin, target):

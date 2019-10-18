@@ -11,6 +11,10 @@ boards_dir = Path('board_database')
 out_dir = Path('test_out')
 summaries_dir = out_dir/'summaries'
 
+redo_flag = '-r' in argv
+if redo_flag:
+    argv.remove('-r')
+
 if '--all' in argv:
     file_list = boards_dir.glob('*')
 elif len(argv) == 1:
@@ -19,9 +23,6 @@ elif len(argv) == 1:
 else:
     file_list = (Path(f) for f in argv[1:])
 
-redo_flag = '-r' in argv
-if redo_flag:
-    argv.remove('-r')
 
 for boards_file in file_list:
     outfname = boards_file.stem + '.tsv'
