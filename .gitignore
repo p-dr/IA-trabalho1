@@ -132,3 +132,7 @@ test/
 .vscode/
 
 gifs/
+
+test_out/
+
+board_database/

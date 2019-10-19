@@ -2,8 +2,9 @@ import depth_first_search as dfs
 import breadth_first_search as bfs
 import best_first as bf
 import a_star as a
-
 from math import sqrt
+
+sqrt_2 = 1.4
 
 # Valores iguais ou menores que 1 são considerados 0.
 str2n = {'-': 4, '*': 0, '#': 2, '$': 3}
@@ -32,7 +33,7 @@ def trapezoidal_dist(pos: tuple, target: tuple) -> float:
         a = abs(pos[0] - target[0])
         b = abs(pos[1] - target[1])
         d = abs(a-b)
-        trapezoidal_dist.values[pos] = sqrt(2) * min(a, b) + d
+        trapezoidal_dist.values[pos] = sqrt_2 * min(a, b) + d
     return trapezoidal_dist.values[pos]
 
 

@@ -2,7 +2,7 @@ from gen_boards import gen_board
 from utils import get_start_end, weight, str2n, how_many, search_algs
 from view import show_board
 from sys import argv
-from time import time as t
+from time import process_time as t
 
 
 fake_eval = {k: v for k, v in zip(('dfs', 'bfs', 'bf', 'a'),
