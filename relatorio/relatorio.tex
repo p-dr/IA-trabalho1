@@ -111,7 +111,7 @@ Para os experimentos são usadas \verb|turn_func = 0.2| e \verb|end_func = 0|, d
 \section{Algoritmos de busca}
 Todos os algoritmos de busca possuem o mesmo cabeçalho:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python]
 def search(board: list, origin: tuple,
 	target: tuple, camera: Camera = None) -> list:
 \end{lstlisting}
@@ -120,8 +120,21 @@ em que \verb|board| é o tabuleiro, \verb|origin| é a tupla da casa de início,
 
 \subsection{Busca cega}
 Nessa modalidade de busca, o algoritmo não faz uso de nenhuma informação sobrea localização de casa-alvo. Os tipos implementados são descritos a seguir.
+
 \subsubsection{Busca em profundidade}
+A busca em profundidade está na função search no arquivo \verb|depth_first_search.py|. Inicialmente criamos uma função para que retorne o caminho encontrado pelo algoritmo.\\
+
+As variáveis \verb|visited| e \verb|processed| são, respectivamente, um deque e um set, estruturas otimizadas para o nosso uso (deque é otimizada para operações de inserção/deleção do início ou final da lista e set para a busca de um elemento). Inicialmente inserimos a tupla da \verb|origem| em \verb|visited| e \verb|processed|, em seguida iniciamos um loop que ocorre enquanto houver tuplas em \verb|visited| (ou até chegar no destino) e a variável pos recebe a tupla que está no início de \verb|visited|. Essa posição no tabuleiro é marcada como visitada.\\
+
+Após isso verificamos os vizinhos de pos utilizando a função \verb|available_moves| que retorna apenas as casas ainda não processadas, elas são adicionados no início de \verb|visited| (serão os próximas casas processadas) e marcamos que pos é a casa antecessora delas a fim de obtermos o caminho após a execução do algoritmo.\\
+
+Depois de explorar todos os vizinhos, se quisermos criar um gif é “tirada uma foto” do tabuleiro e reinicia-se o processo com pos recebendo a tupla no início de \verb|visited|.
+Se não for encontrado um caminho a função retorna \verb|None|.
+
+
 \subsubsection{Busca em largura}
+A função para realizar a busca em largura é totalmente análoga a de busca em profundidade, no entanto ao invés de adicionar os vizinhos de pos no início de visited, eles são adicionados no final.
+
 
 \subsection{Busca informada}
 Nos algoritmos de busca informada, utiliza-se o conhecimento das coordenadas do alvo para guiar a procura. Contudo, a presença e localização dos obstáculos não é conhecida, e faz-se necessário que o algoritmo determine os melhores caminhos alternativos de desvio.\\
@@ -147,7 +160,7 @@ Sobre o cálculo das distâncias, além da norma euclideana mais canonicamente u
 	\caption{Várias representações da mesma distância trapezoidal entre pontos em vértices opostos do retângulo.}
 \end{figure}
 
-Dada sua representação, se os pontos que se distam formam um retângulo de lados \(a\) e \(b\) e assumindo \(a\gt b\) sem perda de generalidade, temos que a norma trapezoidal será dada por \(\sqrt{2}a + (a - b)\), ou em código:\\
+Dada sua representação, se os pontos que se distam formam um retângulo de lados \(a\) e \(b\) e assumindo \(a > b\) sem perda de generalidade, temos que a norma trapezoidal será dada por \(\sqrt{2}a + (a - b)\), ou em código:\\
 
 \begin{lstlisting}[language=Python]
 def trapezoidal_dist(pos: tuple, target: tuple) -> float:
