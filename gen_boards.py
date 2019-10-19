@@ -1,6 +1,7 @@
 from utils import (count, str2n, n2str, orth_steps, steps,
                    inside)
 from random import random, choice
+from pathlib import Path
 from math import floor
 from sys import argv
 
@@ -171,14 +172,18 @@ def read_boards(path):
 
 
 def main():
+
     if '-h' in argv:
         print('Generate N boards and save to filename_N_IxJ.boards.')
         print('Usage: python gen_boards.py N filename I J.')
         exit()
 
+    out_dir = Path('board_database')
+    out_dir.mkdir(exist_ok=True)
+
     I, J = int(argv[3]), int(argv[4])
 
-    with open(f'board_database/{argv[1]}_{argv[2]}_{I}x{J}.boards', 'w') as f:
+    with (out_dir/f'{argv[1]}_{argv[2]}_{I}x{J}.boards').open('w') as f:
         for i in range(int(argv[2])):
             print(f'Writing board {i}/{argv[2]}...', end='\r')
             write_board(gen_board(I, J), f)

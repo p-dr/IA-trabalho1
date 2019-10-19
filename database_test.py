@@ -8,8 +8,16 @@ from copy import deepcopy
 from sys import argv
 
 boards_dir = Path('board_database')
+
+# Create directory tree
 out_dir = Path('test_out')
+
+out_dir.mkdir(exist_ok=True)
 summaries_dir = out_dir/'summaries'
+summaries_dir.mkdir(exist_ok=True)
+
+for name in names:
+    (out_dir/name).mkdir(exist_ok=True)
 
 redo_flag = '-r' in argv
 if redo_flag:
