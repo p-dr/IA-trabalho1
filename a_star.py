@@ -2,7 +2,6 @@ import utils as u
 from celluloid import Camera
 from view import plot_board
 from math import sqrt
-from heapq import heappop, heappush, heapify
 
 sqrt_2 = 1.4
 
@@ -30,8 +29,7 @@ def search(board: list, origin: tuple,
         return path
 
     ######## inicializações ###########
-    open_list = []
-    heappush(open_list, [0, origin])
+    open_list = {origin: 0}
     closed_list = set()
     parents = {}
     calc_g.values = {origin: 0}
@@ -39,7 +37,8 @@ def search(board: list, origin: tuple,
     ###################################
 
     while open_list:
-        pos = heappop(open_list)[1]
+        pos = min(open_list, key=lambda e: open_list[e])
+        del(open_list[pos])
         if pos == target:
             return calc_path(parents)
         if pos != origin:
@@ -51,17 +50,13 @@ def search(board: list, origin: tuple,
                     # marca como tocado
                     board[move[0]][move[1]] = .2
                 f = calc_f(pos, move, target)
-                try:
-                    # i = posição de move em open_list
-                    i = next(i for (i,p) in enumerate(open_list) if p[1] == move)
-                    old_f = open_list[i][0]
+                if move in open_list:
+                    old_f = open_list[move]
                     if f < old_f:
-                        open_list[i][0] = f
-                        heapify(open_list)
+                        open_list[move] = f
                         parents[move] = pos
-                except StopIteration:
-                    # move não está em open_list
-                    heappush(open_list, [f, move])
+                else:
+                    open_list[move] = f
                     parents[move] = pos
         closed_list.add(pos)
 
