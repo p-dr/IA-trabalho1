@@ -57,9 +57,9 @@ def count(n=0):
         n += 1
 
 
-def available_steps(board, pos, orth=False):
-    """Retorna todas os passos possíveis (e.g. [(1, 1), (0, -1)])
-    em board a partir de pos. orth=True para só passos ortogonais."""
+def available_moves(board, pos, orth=False):
+    """Retorna todas as próximas posições possíveis em board a partir de
+    pos. orth=True para só passos ortogonais."""
     i0, j0 = pos
     ret = []
 
@@ -67,16 +67,9 @@ def available_steps(board, pos, orth=False):
         j, i = j0 + dj, i0 + di
 
         if free(board, i, j):
-            ret.append((di, dj))
+            ret.append((i, j))
 
     return ret
-
-
-def available_moves(board, pos, orth=False):
-    """Retorna todas as próximas posições possíveis em board a partir de
-    pos."""
-    return [(pos[0] + di, pos[1] + dj)
-            for di, dj in available_steps(board, pos)]
 
 
 def get_start_end(board):

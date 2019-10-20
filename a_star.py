@@ -37,7 +37,7 @@ def search(board: list, origin: tuple,
     ###################################
 
     while open_list:
-        pos = min(open_list, key=lambda e: open_list[e])
+        pos = min(open_list, key=lambda p: open_list[p])
         del(open_list[pos])
         if pos == target:
             return calc_path(parents)
@@ -49,13 +49,16 @@ def search(board: list, origin: tuple,
                 if move != target:
                     # marca como tocado
                     board[move[0]][move[1]] = .2
-                f = calc_f(pos, move, target)
                 if move in open_list:
+                    new_g = calc_g(pos, move)
+                    new_h = u.trapezoidal_dist.values[move]
+                    f = new_g + new_h
                     old_f = open_list[move]
                     if f < old_f:
                         open_list[move] = f
                         parents[move] = pos
                 else:
+                    f = calc_f(pos, move, target)
                     open_list[move] = f
                     parents[move] = pos
         closed_list.add(pos)
