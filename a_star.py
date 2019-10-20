@@ -48,7 +48,7 @@ def search(board: list, origin: tuple,
         for move in u.available_moves(board, pos):
             if move not in closed_list:
                 if move != target:
-                    # marca como visitado
+                    # marca como tocado
                     board[move[0]][move[1]] = .2
                 f = calc_f(pos, move, target)
                 try:
