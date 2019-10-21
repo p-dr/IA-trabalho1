@@ -7,15 +7,9 @@ sqrt_2 = 1.4
 
 def calc_g(pos1: tuple, pos2: tuple) -> float:
     """ "Peso" para ir da origem até pos2 através de pos1 """
-    ortogonal = pos1[0] == pos2[0] or pos1[1] == pos2[1]
-    new_g = calc_g.values[pos1] + (1 if ortogonal else sqrt_2)
-    if pos2 not in calc_g.values or calc_g.values[pos2] > new_g:
-        calc_g.values[pos2] = new_g
+    orthogonal = pos1[0] == pos2[0] or pos1[1] == pos2[1]
+    new_g = calc_g.values[pos1] + (1 if orthogonal else sqrt_2)
     return new_g
-
-
-def calc_f(pos1: tuple, pos2: tuple, target: tuple) -> float:
-    return calc_g(pos1, pos2) + u.trapezoidal_dist(pos2, target)
 
 
 def search(board: list, origin: tuple,
@@ -51,14 +45,19 @@ def search(board: list, origin: tuple,
                     board[move[0]][move[1]] = .2
                 if move in open_list:
                     new_g = calc_g(pos, move)
-                    new_h = u.trapezoidal_dist.values[move]
-                    f = new_g + new_h
+                    if calc_g.values[move] > new_g:
+                        calc_g.values[move] = new_g
+                    h = u.trapezoidal_dist.values[move]
+                    new_f = new_g + h
                     old_f = open_list[move]
-                    if f < old_f:
-                        open_list[move] = f
+                    if new_f < old_f:
+                        open_list[move] = new_f
                         parents[move] = pos
                 else:
-                    f = calc_f(pos, move, target)
+                    g = calc_g(pos, move)
+                    calc_g.values[move] = g
+                    h = u.trapezoidal_dist(move, target)
+                    f = g + h
                     open_list[move] = f
                     parents[move] = pos
         closed_list.add(pos)
