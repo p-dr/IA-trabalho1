@@ -28,7 +28,7 @@ def search(board: list, origin: tuple,
                 heappush(queue, (u.trapezoidal_dist(move, target),
                                  path + [move]))
                 if move != target:
-                    # marca como visitado
+                    # marca como tocado
                     board[move[0]][move[1]] = .2
                 processed.add(move)
 

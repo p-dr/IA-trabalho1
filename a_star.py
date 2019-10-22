@@ -2,21 +2,14 @@ import utils as u
 from celluloid import Camera
 from view import plot_board
 from math import sqrt
-from heapq import heappop, heappush, heapify
 
 sqrt_2 = 1.4
 
 def calc_g(pos1: tuple, pos2: tuple) -> float:
     """ "Peso" para ir da origem até pos2 através de pos1 """
-    ortogonal = pos1[0] == pos2[0] or pos1[1] == pos2[1]
-    new_g = calc_g.values[pos1] + (1 if ortogonal else sqrt_2)
-    if pos2 not in calc_g.values or calc_g.values[pos2] > new_g:
-        calc_g.values[pos2] = new_g
+    orthogonal = pos1[0] == pos2[0] or pos1[1] == pos2[1]
+    new_g = calc_g.values[pos1] + (1 if orthogonal else sqrt_2)
     return new_g
-
-
-def calc_f(pos1: tuple, pos2: tuple, target: tuple) -> float:
-    return calc_g(pos1, pos2) + u.trapezoidal_dist(pos2, target)
 
 
 def search(board: list, origin: tuple,
@@ -30,8 +23,7 @@ def search(board: list, origin: tuple,
         return path
 
     ######## inicializações ###########
-    open_list = []
-    heappush(open_list, [0, origin])
+    open_list = {origin: 0}
     closed_list = set()
     parents = {}
     calc_g.values = {origin: 0}
@@ -39,7 +31,8 @@ def search(board: list, origin: tuple,
     ###################################
 
     while open_list:
-        pos = heappop(open_list)[1]
+        pos = min(open_list, key=lambda p: open_list[p])
+        del(open_list[pos])
         if pos == target:
             return calc_path(parents)
         if pos != origin:
@@ -48,20 +41,24 @@ def search(board: list, origin: tuple,
         for move in u.available_moves(board, pos):
             if move not in closed_list:
                 if move != target:
-                    # marca como visitado
+                    # marca como tocado
                     board[move[0]][move[1]] = .2
-                f = calc_f(pos, move, target)
-                try:
-                    # i = posição de move em open_list
-                    i = next(i for (i,p) in enumerate(open_list) if p[1] == move)
-                    old_f = open_list[i][0]
-                    if f < old_f:
-                        open_list[i][0] = f
-                        heapify(open_list)
+                if move in open_list:
+                    new_g = calc_g(pos, move)
+                    if calc_g.values[move] > new_g:
+                        calc_g.values[move] = new_g
+                    h = u.trapezoidal_dist.values[move]
+                    new_f = new_g + h
+                    old_f = open_list[move]
+                    if new_f < old_f:
+                        open_list[move] = new_f
                         parents[move] = pos
-                except StopIteration:
-                    # move não está em open_list
-                    heappush(open_list, [f, move])
+                else:
+                    g = calc_g(pos, move)
+                    calc_g.values[move] = g
+                    h = u.trapezoidal_dist(move, target)
+                    f = g + h
+                    open_list[move] = f
                     parents[move] = pos
         closed_list.add(pos)
 
