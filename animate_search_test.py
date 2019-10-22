@@ -51,7 +51,8 @@ def main():
             plot_board(board)
             camera.snap()
 
-        animation = camera.animate()
+        animation = camera.animate(interval=1e4/len(camera._photos),
+                                   repeat_delay=1e4, blit=True)
         outname = f'{timestamp}_{name}_{argv[1]}x{argv[2]}.gif'
         animation.save('gifs/' + outname, writer='imagemagick')
         print(search_res)

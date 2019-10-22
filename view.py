@@ -9,7 +9,7 @@ def show_board(board):
     plt.show()
 
 def plot_board(board):
-    plt.pcolor(board, cmap='inferno')
+    plt.pcolor(board, cmap='Spectral')
 
 
 def figure():

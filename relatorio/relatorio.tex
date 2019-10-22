@@ -6,7 +6,13 @@
 
 \graphicspath{{imagens/}}
 
+\title{Algoritmos de busca - SCC0230 Inteligência Artificial}
+\author{9771550 - Mateus Castilho Leite\\
+9762595 - Pedro de C. B. Ilídio Silva\\
+9771546 - Vinicius Henrique Borges}
+
 \begin{document}
+\maketitle
 \section{Introdução}
 Tivemos como objetivo desse trabalho a elaboração e comparação de desempenho de quatro diferentes algoritmos de busca - sendo duas buscas cegas e duas buscas informadas.
 
@@ -32,26 +38,28 @@ sudo pip3 install celluloid
 \end{verbatim}
 
 \section{Tabuleiros}
-Foram criadas funções para criação, leitura e escrita de tabuleiros que serão usados no presente trabalho. Para a manipulação e visualização, mostrou-se mais fácil utilizar matrizes numéricas para representar os objetos sobre o tabuleiro, enquanto nos foi requisitado o uso de representação com caracteres para as casas na leitura e escrita dos tabuleiros. Desta forma, estabeleceu-se o código apresentado pela tabela \ref{codigo}, implementado no dicionário \verb|str2n| contido no arquivo \verb|utils.py|.
+Foram criadas funções para criação, leitura e escrita de tabuleiros que serão usados no presente trabalho. Para a manipulação e visualização, mostrou-se mais fácil utilizar matrizes numéricas para representar os objetos sobre o tabuleiro, enquanto nos foi requisitado o uso de representação com caracteres para as casas na leitura e escrita dos tabuleiros. Desta forma, estabeleceu-se o código apresentado pela tabela \ref{tab:codigo}, implementado no dicionário \verb|str2n| contido no arquivo \verb|utils.py|.
 
 \begin{table}[h!]
-	\label{codigo}
+	\label{tab:codigo}
 	\centering
-	\begin{tabular}{c|c|c}
-		Significado & Código de caracteres & Código numérico\\
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\textbf{Significado} & \textbf{Código de caracteres} & \textbf{Código numérico}\\
 		\hline
 		Casa livre & * & 0\\
 		Parede ou obstáculo & - & 4\\
 		Casa objetivo & \$ & 3\\
 		Casa de início da busca & \# & 2\\
-		Marcações temporárias & (Nenhum) & \textless 1
+		Marcações temporárias & (Nenhum) & \textless 1\\
+		\hline
 
 	\end{tabular}
 	\caption{Tabela de conversão entre os diferentes códigos utilizados no projeto.}
 \end{table}
 
 \subsection{Criação dos tabuleiros}
-Criou-se algoritmo para a geração automática de tabuleiros, com suas paredes e os pontos de início e fim da busca. Visto que se deseja aparência semelhante à exposta na descrição do projeto (Figura \ref{tabuleiro_pedido}), não seria possível a geração completamente aleatória das paredes, e fez-se necessário desenvolver a estratégia descrita adiante.
+Criou-se algoritmo para a geração automática de tabuleiros, com suas paredes e os pontos de início e fim da busca. Visto que se deseja aparência semelhante à exposta na descrição do projeto, não seria possível a geração completamente aleatória das paredes, e fez-se necessário desenvolver a estratégia descrita adiante.
 
 \subsubsection{Visão geral}
  O processo de gerar tabuleiros é executado pelo script \texttt{gen\_boards.py}, mais especificamente e em seu mais alto nível pela função \verb|gen_board| implementada no referido \emph{script}, acontecendo da seguinte maneira:
@@ -61,8 +69,6 @@ Criou-se algoritmo para a geração automática de tabuleiros, com suas paredes 
 	\item São sorteados dois pontos aleatoriamente para servirem de início e fim da busca. São sorteadas quantas vezes forem preciso até que tenham distância Manhattan entre si maior que um comprimento heuristicamente definido como a soma das dimensões do tabuleiro sobre 2;
 	\item São construídas as paredes, como melhor explicado posteriormente.
 \end{enumerate}
-
-[código da função]
 
 %Inicialmente criava-se um caminho aleatório para garantir que não houvesse
 \subsubsection{Orquestração da contrução das paredes}
@@ -74,8 +80,6 @@ As peças mais importantes dese processo são as duas funções \verb|build_wall
 	\item É desenhada uma parede a partir dessa casa com a função random walk;
 	\item O processo é repetido \verb|nseeds| vezes, um dos parâmetro sda função \verb|build_wals|, definido empiricamente por padrão como um décimo da área do tabuleiro.
 \end{enumerate}
-
-[código da função]
 
 
 \subsubsection{Construção de cada parede}
@@ -107,6 +111,17 @@ Para os experimentos são usadas \verb|turn_func = 0.2| e \verb|end_func = 0|, d
 	\caption{Exemplo de tabuleiro 80x80 criado com o algoritmo descrito. A casa vermelha é a posição de início da busca, e a laranja é a casa-objetivo.}
 \end{figure}
 
+\subsection{Leitura e escrita de tabuleiros}
+O script \verb|gen_boards|, se executado diretamente na linha de commando, isto é, com \verb|__name__ ==  __main__|, gera um arquivo com diversos tabuleiros escritos como caracteres na pasta \verb|boards_database|. A sintaxe criada pode ser rememorada invocando o script como \verb|gen_boards.py -h|, cujo output é mostrado abaixo:\\
+
+\begin{verbatim}
+Generate N boards and save to filename_N_IxJ.boards.
+Usage: python gen_boards.py filename N I J.
+\end{verbatim}
+
+de forma que se for executado \verb|python gen_boards.py teste 1000 13 15| serão gerados mil tabuleiros 13 por 15 na pasta \verb|boards_database|, como um arquivo chamado \verb|teste_1000_13x15.boards|.\\
+
+A leitura desses arquivos é feita por meio do gerador \verb|read_boards| definido também no arquivo \verb|gen_boards.py|
 
 \section{Algoritmos de busca}
 Todos os algoritmos de busca possuem o mesmo cabeçalho:
@@ -196,5 +211,57 @@ A cálculo de \verb|h| pode ser obtido através de duas funções (heurísticas)
 
 A busca A* está implementada no arquivo \verb|a_star.py|, na função \verb|search(board, origin, target)|, onde \verb|board| é o tabuleiro (labirinto), \verb|origin| é a posição inicial e \verb|target| é a posição destino. Dentro dessa função está declarada a função \verb|calc_path(parents)|, cujo objetivo é calcular o caminho percorrido desde \verb|target| até \verb|origin|, utilizando o dicionário \verb|parents| que foi gerado durante a busca e representa a posição pai de cada posição visitada.\\
 
-Na busca em si utilizamos 5 estruturas de dados: \verb|open_list| é uma fila de prioridades que guarda as posições que foram analisadas porém ainda não foram totalmente processadas (ou seja, seus filhos não foram analisados), o parâmetro de ordenação da fila de prioridades é o valor de \verb|f| de cada posição; \verb|closed_list| é uma estrutura do tipo set que guarda as posições já totalmente processadas, ele é utilizado para verificar se a próxima posição a ser analisada ainda não foi processada (caso tenha sido, essa posição é ignorada), o tipo set foi utilizado para otimizar a busca e inserção, cujas complexidades são O(1) (constantes); \verb|parents| é um dicionário (par chave-valor) onde as chaves são posições do tabuleiro e o valor é o respectivo pai da posição na chave; \verb|calc_g.values| é um dicionário pertencente à função \verb|calc_g| e guarda os cálculos do menor \verb|g| para cada posição \verb|pos2| do tabuleiro, partindo de \verb|pos1|; \verb|trapezoidal_dist.values| pertence à função \verb|trapezoidal_dist| e guarda os cálculos da heurística \verb|h| em distância trapezoidal para cada posição pos do tabuleiro até o destino. No loop principal da busca, o algoritmo checa de \verb|open_list| está vazio, retira a próxima posição de \verb|open_list| (com menor valor de f), checa se a posição é o destino (caso for, encerra a busca e calcula o caminho),
+Na busca em si utilizamos 5 estruturas de dados: \verb|open_list| é uma fila de prioridades que guarda as posições que foram analisadas porém ainda não foram totalmente processadas (ou seja, seus filhos não foram analisados), o parâmetro de ordenação da fila de prioridades é o valor de \verb|f| de cada posição; \verb|closed_list| é uma estrutura do tipo set que guarda as posições já totalmente processadas, ele é utilizado para verificar se a próxima posição a ser analisada ainda não foi processada (caso tenha sido, essa posição é ignorada), o tipo set foi utilizado para otimizar a busca e inserção, cujas complexidades são O(1) (constantes); \verb|parents| é um dicionário (par chave-valor) onde as chaves são posições do tabuleiro e o valor é o respectivo pai da posição na chave; \verb|calc_g.values| é um dicionário pertencente à função \verb|calc_g| e guarda os cálculos do menor \verb|g| para cada posição \verb|pos2| do tabuleiro, partindo de \verb|pos1|; \verb|trapezoidal_dist.values| pertence à função \verb|trapezoidal_dist| e guarda os cálculos da heurística \verb|h| em distância trapezoidal para cada posição pos do tabuleiro até o destino. No loop principal da busca, o algoritmo checa de \verb|open_list| está vazio, retira a próxima posição de \verb|open_list| (com menor valor de f), checa se a posição é o destino (caso for, encerra a busca e calcula o caminho), em seguida, para cada posição filha da posição atual que pertença à uma casa livre do tabuleiro que não pertença ao \verb|closed_list|, calculamos o novo valor de f, verificamos se a nova posição está no \verb|open_list| e possui um f menor do já armazenado (caso sim, este é atualizado) e, por fim, caso a nova posição não esteja em \verb|open_list| a mesma é adicionada juntamente com seu valor de f calculado; após todos os filhos serem processados, a posição corrente é adicionada ao \verb|closed_list| para impedir que ela seja analisada novamente. Caso o loop se encerre devido ao \verb|open_list| se tornar vazio, não foi encontrado um caminho entre origem e destino e a função retorna \verb|None|.
+
+\section{Testes contra o banco de tabuleiros}
+Rodando o script \verb|database_test.py| com a flag \verb|--all|, coleta-se os tempos de execução, casas exploradas, comprimento e peso do caminho encontrado, para cada algoritmo de busca apresentado e para cada  arquivo de tabuleiros na pasta \verb|boards_database|, gerados com o script \verb|gen_boards.py| como explicado na seção de leitura de escrita de tabuleiros. Os resultados são salvos em uma pasta denominada \verb|test_out|, dentro da qual são divididos em pastas com o nome de cada busca os seus respectivos resultados. Uma pasta extra, chamada \verb|summaries| também é gerada no interior de \verb|test_out| contendo as médias e desvios de cada algoritmo e de cada base, com nomes que fazem referência clara ao arquivos de tabuleiros nos quais foram efetuadas as medidas.\\
+
+A partir de 5 mil tabuleiros 100x100, obtém-se os seguintes resultados, primeiramente fazendo uso da distância euclideana:\\
+
+\begin{verbatim}
+MEANS
+             DFS      	BFS       Best_first   	 A_star
+dt      	   0.022662 	   0.036742	   0.004971 	    0.058062
+len   	 577.383415   110.490148   142.690066    111.004721
+touched  3758.885600  5407.986600   644.446200   2272.908800
+visited  3299.502400  5352.495600   484.772600   2154.960200
+weight	 615.143926   124.711901   161.060756    123.822382
+
+STANDARD DEVS.
+              DFS      	 BFS       Best_first   	  A_star
+dt      	   0.012103 	   0.007718	   0.007943 	     0.034282
+len   	 230.706816	  20.864224    38.550465	    20.988451
+touched  1776.999896  1079.757617   801.887360   1152.828864
+visited  1757.435337  1089.757532   808.560541   1150.434540
+weight	 246.423772	  23.018583    42.589246	    22.813988
+\end{verbatim}
+
+Para a distância trapezoidal, foram obtidos os seguintes valores:
+
+\begin{verbatim}
+MEANS
+
+         DFS          BFS          Best_first      A_star
+dt       0.022323     0.036007	   0.004891 	   0.053513
+len   	 577.383415   110.490148   142.233374      111.004721
+touched  3758.885600  5407.986600  651.804400      2065.213000
+visited  3299.502400  5352.495600  491.985000      1947.215400
+weight	 615.143926   124.711901   160.945587      123.822382
+
+
+STANDARD DEVS.
+
+         DFS      	 BFS           Best_first     A_star
+dt       0.011919 	 0.007564      0.008060       0.034471
+len   	 230.706816	 20.864224     38.170252      20.987629
+touched  1776.999896     1079.757617   803.848128     1152.157619
+visited  1757.435337     1089.757532   810.158904     1149.844707
+weight	 246.423772	 23.018583     42.129155      22.814023
+
+\end{verbatim}
+
+Como esperado, de fato se observa que a \emph{best-first} foi mais rápida em todos os casos, contudo, o caminho escolhido por muitas vezes não era o mais curto. A heurística trapezoidal de fato trouxe diminuição nos tempos de execução, sem afetar o comprimento dos caminhos encontrados. Nota-se também desvio padrão considerável, na mesma ordem de grandeza dos valores, mostrando a diversidade de tabuleiros e como ela afeta a execução das buscas.\\
+
+A distância euclidiana é ligeiramente mais lenta do que a distância trapezoidal para o algoritmo A* pois trata-se de uma heurística mais otimista, de modo que o seu peso (em relação à função g) é menor. Para o Best-first a diferença é insignificante pois esta heurística é a única informação utilizada no cálculo do caminho, de modo que não há influência sobre outros parâmetros. Os algoritmos cegos, por não utilizarem heurística, produziram o mesmo resultado.
+
 \end{document}
